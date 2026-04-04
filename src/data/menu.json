@@ -1,0 +1,18 @@
+{
+  "dineInCategories": [
+    { "id": "di_cat_pizza", "name": "Gourmet Pizzas", "icon": "🍕" },
+    { "id": "di_cat_burger", "name": "Smash Burgers", "icon": "🍔" }
+  ],
+  "deliveryCategories": [
+    { "id": "del_cat_bowls", "name": "Rice Bowls & Pasta", "icon": "🍲" },
+    { "id": "del_cat_drinks", "name": "Beverages", "icon": "🥤" }
+  ],
+  "dineInItems": [
+    { "id": "di_itm_1", "categoryId": "di_cat_pizza", "title": "Truffle Mushroom Pizza", "description": "Hand-tossed base with truffle oil, wild mushrooms.", "price": 1800.00, "isVegetarian": true, "image": "" },
+    { "id": "di_itm_2", "categoryId": "di_cat_burger", "title": "Wagyu Smash Burger", "description": "Double beef patty, cheddar, signature aioli.", "price": 1600.00, "isVegetarian": false, "image": "" }
+  ],
+  "deliveryItems": [
+    { "id": "del_itm_1", "categoryId": "del_cat_bowls", "title": "Teriyaki Chicken Bowl", "description": "Grilled chicken with sticky rice and edamame.", "price": 1450.00, "isVegetarian": false, "image": "" },
+    { "id": "del_itm_2", "categoryId": "del_cat_drinks", "title": "Lemon Mojito (Canned)", "description": "Refreshing mint and lime, sealed.", "price": 500.00, "isVegetarian": true, "image": "" }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "todaysSpecial": {
+    "id": "spec_01",
+    "title": "Wagyu Smash Burger Combo",
+    "description": "Our signature Wagyu Burger + Fries + Drink of your choice!",
+    "price": 1999.00,
+    "image": ""
+  },
+  "popularItems": [
+    { "id": "pop_1", "title": "Chicken Burger", "price": 450.00 },
+    { "id": "pop_2", "title": "Alfredo Pasta", "price": 650.00 },
+    { "id": "pop_3", "title": "Mojito", "price": 300.00 },
+    { "id": "pop_4", "title": "Chicken Fried Rice", "price": 400.00 },
+    { "id": "pop_5", "title": "Brownie Ice Cream", "price": 350.00 }
+  ],
+  "promoCombos": [
+    { "id": "combo_1", "title": "Couple Combo", "description": "Burger + Pasta + 2 Drinks", "price": 1400.00 },
+    { "id": "combo_2", "title": "Family Combo", "description": "Pizza + Fried Rice + Starter + Drinks", "price": 2999.00 }
+  ]
+}

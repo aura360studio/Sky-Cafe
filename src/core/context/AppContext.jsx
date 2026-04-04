@@ -1,0 +1,111 @@
+import React, { createContext, useContext, useState } from 'react';
+
+const AppContext = createContext();
+
+export const APP_MODES = {
+  DINE_IN: 'DINE_IN',
+  DELIVERY: 'DELIVERY',
+  NIGHT_LIFE: 'NIGHT_LIFE'
+};
+
+export const APP_PAGES = {
+  HOME: 'HOME',
+  MENU: 'MENU',
+  CART: 'CART',
+  BOOKINGS: 'BOOKINGS',
+  INFO: 'INFO',
+  SERVICES: 'SERVICES',
+  EVENTS: 'EVENTS',
+  ORDER_SUCCESS: 'ORDER_SUCCESS'
+};
+
+export const AppProvider = ({ children }) => {
+  // Navigation State
+  const [mode, setMode] = useState(APP_MODES.DINE_IN);
+  const [activePage, setActivePage] = useState(APP_PAGES.HOME);
+  const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
+
+  // Cart State
+  const [cartItems, setCartItems] = useState([]);
+  
+  // Checkout Context Metadata
+  const [customerName, setCustomerName] = useState('');
+  const [tableNumber, setTableNumber] = useState('');
+  const [location, setLocation] = useState(''); 
+  const [distance, setDistance] = useState(null); 
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  
+  // Cart Logic
+  const addToCart = (item, quantity = 1, customizations = {}) => {
+    const cartItemId = `${item.id}_${Date.now()}`;
+    const lineTotal = item.price * quantity;
+    setCartItems(prev => [...prev, { ...item, cartItemId, quantity, customizations, lineTotal }]);
+  };
+
+  const removeFromCart = (cartItemId) => {
+    setCartItems(prev => prev.filter(i => i.cartItemId !== cartItemId));
+  };
+
+  const updateCartItemQuantity = (cartItemId, delta) => {
+    setCartItems(prev => prev.map(item => {
+      if (item.cartItemId === cartItemId) {
+        const newQuantity = Math.max(1, item.quantity + delta);
+        return { ...item, quantity: newQuantity, lineTotal: item.price * newQuantity };
+      }
+      return item;
+    }));
+  };
+
+  // Session Orders (Current Bill)
+  const [sessionOrders, setSessionOrders] = useState(() => {
+    try {
+      const item = window.localStorage.getItem('sky_session_orders');
+      return item ? JSON.parse(item) : [];
+    } catch (error) {
+      return [];
+    }
+  });
+
+  const syncSessionOrders = (newOrders) => {
+    const updated = [...sessionOrders, ...newOrders];
+    setSessionOrders(updated);
+    try {
+      window.localStorage.setItem('sky_session_orders', JSON.stringify(updated));
+    } catch (error) {}
+  };
+
+  const clearSessionOrders = () => {
+    setSessionOrders([]);
+    try {
+      window.localStorage.removeItem('sky_session_orders');
+    } catch (error) {}
+  };
+
+  const clearCart = () => setCartItems([]);
+
+  const cartTotal = cartItems.reduce((acc, item) => acc + item.lineTotal, 0);
+  const cartItemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const sessionTotal = sessionOrders.reduce((acc, item) => acc + item.lineTotal, 0);
+
+  const handleSetMode = (newMode) => {
+    setMode(newMode);
+    setActivePage(APP_PAGES.HOME);
+  };
+
+  const value = {
+    mode, setMode: handleSetMode,
+    activePage, setActivePage,
+    isHamburgerOpen, setIsHamburgerOpen,
+    cartItems, addToCart, removeFromCart, updateCartItemQuantity, clearCart, cartTotal, cartItemCount,
+    sessionOrders, syncSessionOrders, clearSessionOrders, sessionTotal,
+    customerName, setCustomerName,
+    tableNumber, setTableNumber,
+    location, setLocation,
+    distance, setDistance,
+    selectedSlot, setSelectedSlot
+  };
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+};
+
+export const useApp = () => useContext(AppContext);

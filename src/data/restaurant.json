@@ -1,0 +1,7 @@
+{
+  "openingTime": "10:00",
+  "closingTime": "23:00",
+  "manualOffline": false,
+  "fullyBooked": false,
+  "holidays": ["2026-04-10"]
+}
