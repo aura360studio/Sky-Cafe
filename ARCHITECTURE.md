@@ -112,3 +112,17 @@ The critical checkout architecture runs seamlessly through WhatsApp.
 6. `whatsapp.js` maps over the arrays, formats a clean human-readable text string, URI-encodes it, and appends it to a global WhatsApp business phone number.
 7. `CartView` opens that external URL, jumping the user to their native WhatsApp application.
 8. Component immediately sets active mode to `ORDER_SUCCESS` and commits the items to the `localStorage` Session Bill before clearing the unsent Cart variables.
+
+---
+
+## 🔌 7. Progressive Web App (PWA) Implementation
+
+Sky Cafe is configured as a full PWA using `vite-plugin-pwa`.
+
+**Key PWA Features:**
+- **Manifest**: Located in `dist/manifest.webmanifest` (generated at build time). Defines app name, colors, and the `standalone` display mode.
+- **Service Worker**: `registerSW.js` handles background caching and automatic updates, allowing the app to load instantly and work offline.
+- **Icons**: High-resolution (192px, 512px) and maskable icons are stored in `public/` to support Android "Add to Home Screen" and iOS "Home Screen" placement.
+- **Installable**: Users on mobile browsers will see the "Install App" or "Add to Home Screen" prompt based on their browser's PWA heuristic.
+
+
