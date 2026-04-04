@@ -204,7 +204,7 @@ export const HomeView = () => {
               <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-secondary)' }}>Swift & Safe</p>
               <h3 style={{ margin: '4px 0 0 0', fontSize: '16px' }}>Doorstep Delivery</h3>
             </div>
-            <Button variant="outline" style={{ fontSize: '13px', padding: '8px 12px' }} onClick={() => alert("How Delivery Works: \n1. Choose your favorites\n2. Checkout via WhatsApp\n3. Our rider delivers in 30-45 mins!")}>
+            <Button variant="outline" style={{ fontSize: '13px', padding: '8px 12px' }} onClick={() => setActivePage(APP_PAGES.INFO)}>
               How Delivery Works →
             </Button>
           </div>
