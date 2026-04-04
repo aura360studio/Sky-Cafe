@@ -12,15 +12,28 @@ export const OrderSuccessView = () => {
       
       <div style={{ background: 'var(--surface-color)', padding: '24px', borderRadius: '12px', marginBottom: '32px', border: '1px solid var(--border-color)', textAlign: 'left' }}>
         <p style={{ marginBottom: '16px', lineHeight: '1.5' }}>
-          We hope you have successfully shared your order details on WhatsApp.<br /><br />
-          <strong>Please inform the waiter once about your order.</strong>
+          We hope you have successfully shared your order details on WhatsApp.
         </p>
+        
+        {mode === APP_MODES.DINE_IN ? (
+          <p style={{ marginBottom: '16px', lineHeight: '1.5' }}>
+            <strong>Please inform the waiter once about your order.</strong>
+          </p>
+        ) : (
+          <p style={{ marginBottom: '16px', lineHeight: '1.5' }}>
+            <strong>We'll notify you when your order is ready for pickup.</strong>
+            <br /><br />
+            Please book your delivery partner (Dunzo/Rapido) once you receive the notification.
+          </p>
+        )}
+
         <p style={{ marginBottom: '16px', lineHeight: '1.5', color: 'var(--text-secondary)' }}>
           You can continue ordering more items from the menu,
           or explore Sky @ Night Life for events and bookings.
         </p>
+        
         <p style={{ fontSize: '13px', fontStyle: 'italic', fontWeight: '500', color: 'var(--accent-color)' }}>
-          Average preparation time is around 15–20 minutes.<br />
+          Average preparation time: {mode === APP_MODES.DINE_IN ? '15–20 minutes' : '30–45 minutes'}.<br />
           Thank you for visiting Sky Cafe & Kitchen.
         </p>
       </div>
