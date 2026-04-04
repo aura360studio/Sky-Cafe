@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { useApp, APP_MODES, APP_PAGES } from '../../core/context/AppContext';
 import { Button } from '../../shared/components/Button';
 import { Input } from '../../shared/components/Input';
 import { SectionTitle } from '../../shared/components/SectionTitle';
+import { Modal } from '../../shared/components/Modal';
 import { generateDineInUrl, generateDeliveryUrl } from '../../services/whatsapp';
 
 export const CartView = () => {
@@ -10,6 +12,8 @@ export const CartView = () => {
     sessionOrders, syncSessionOrders, sessionTotal, clearSessionOrders,
     customerName, setCustomerName, tableNumber, setTableNumber, location, setLocation, setActivePage
   } = useApp();
+
+  const [isClearModalOpen, setIsClearModalOpen] = useState(false);
 
   const handleCheckout = () => {
     if (!customerName || customerName.trim() === '') {
@@ -72,7 +76,15 @@ export const CartView = () => {
 
       {cartItems.length > 0 && (
         <>
-          <SectionTitle title="New Items" subtitle={`${cartItems.length} items securely staged`} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <SectionTitle title="New Items" subtitle={`${cartItems.length} items securely staged`} />
+            <button 
+              onClick={() => setIsClearModalOpen(true)}
+              style={{ background: 'transparent', color: 'var(--danger-color)', border: '1px solid var(--danger-color)', borderRadius: '4px', padding: '6px 12px', fontSize: '13px', cursor: 'pointer', fontWeight: 600, marginTop: '4px' }}
+            >
+              Clear All
+            </button>
+          </div>
       
       <div style={{ marginBottom: '20px' }}>
         {cartItems.map(item => (
@@ -137,6 +149,26 @@ export const CartView = () => {
         <Button variant="primary" size="lg" style={{ width: '100%', padding: '14px 0' }} onClick={handleCheckout}>
           Send Secure WhatsApp Order
         </Button>
+
+        <Modal isOpen={isClearModalOpen} onClose={() => setIsClearModalOpen(false)} title="Clear Cart?">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '14px', margin: 0 }}>
+              Are you sure you want to remove all {cartItems.length} new items from your cart? This action cannot be undone.
+            </p>
+            <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+              <Button variant="outline" style={{ flex: 1 }} onClick={() => setIsClearModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="primary" style={{ flex: 1, background: 'var(--danger-color)' }} onClick={() => {
+                clearCart();
+                setIsClearModalOpen(false);
+              }}>
+                Yes, Clear All
+              </Button>
+            </div>
+          </div>
+        </Modal>
+
       </>
     )}
     </div>
