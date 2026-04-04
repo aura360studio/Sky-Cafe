@@ -10,18 +10,24 @@ export const Header = () => {
         value={mode} 
         onChange={(e) => setMode(e.target.value)}
         style={{
-          background: 'var(--bg-color)',
-          color: 'var(--text-primary)',
-          border: '1px solid var(--border-color)',
-          borderRadius: '4px',
-          padding: '4px 8px',
+          background: 'var(--accent-color)',
+          color: '#ffffff',
+          border: 'none',
+          borderRadius: '20px',
+          padding: '6px 16px',
           fontSize: '14px',
-          outline: 'none'
+          fontWeight: '600',
+          outline: 'none',
+          cursor: 'pointer',
+          appearance: 'none',
+          WebkitAppearance: 'none',
+          textAlign: 'center',
+          boxShadow: '0 2px 8px rgba(16, 163, 127, 0.3)'
         }}
       >
-        <option value={APP_MODES.DINE_IN}>Dine In</option>
-        <option value={APP_MODES.DELIVERY}>Delivery</option>
-        <option value={APP_MODES.NIGHT_LIFE}>Night Life</option>
+        <option value={APP_MODES.DINE_IN}>Dine In ▾</option>
+        <option value={APP_MODES.DELIVERY}>Delivery ▾</option>
+        <option value={APP_MODES.NIGHT_LIFE}>Night Life ▾</option>
       </select>
       <button 
         className="icon-btn" 
