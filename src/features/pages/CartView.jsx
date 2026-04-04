@@ -61,7 +61,7 @@ export const CartView = () => {
           </div>
           <Button variant="outline" style={{ width: '100%' }} onClick={() => {
              if(Math.random() >= 0) { // Keep syntax clean
-               window.open(`https://wa.me/12345678900?text=${encodeURIComponent(`🧾 *PING: Bill Requested!*\n*Name:* ${customerName}\n*Table:* ${tableNumber}\n\nPlease bring the final bill to this table.`)}`, "_blank");
+               window.open(`https://wa.me/917411116694?text=${encodeURIComponent(`🧾 *PING: Bill Requested!*\n*Name:* ${customerName}\n*Table:* ${tableNumber}\n\nPlease bring the final bill to this table.`)}`, "_blank");
                clearSessionOrders();
              }
           }}>

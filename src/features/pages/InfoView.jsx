@@ -164,7 +164,7 @@ export const InfoView = () => {
         </div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '12px' }}>
           <span className="material-icons" style={{ fontSize: '18px', color: '#4caf50' }}>call</span>
-          <span style={{ fontWeight: '500' }}>+91 98765 43210</span>
+          <span style={{ fontWeight: '500' }}>+91 74111 16694</span>
         </div>
       </Card>
 

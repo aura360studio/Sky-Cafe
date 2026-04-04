@@ -1,4 +1,4 @@
-const WA_NUMBER = "12345678900"; // Configurable constant
+const WA_NUMBER = "917411116694"; // Configurable constant
 const BASE_URL = `https://wa.me/${WA_NUMBER}?text=`;
 
 export const generateDineInUrl = (cartItems, customerName, tableNumber, cartTotal) => {

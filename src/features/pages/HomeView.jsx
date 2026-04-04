@@ -130,8 +130,8 @@ export const HomeView = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px', marginBottom: '8px', alignItems: 'center' }}>
               <span style={{ color: 'var(--text-secondary)' }}>Contact</span>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <strong>+91 98765 43210</strong>
-                <button onClick={() => window.open('tel:+919876543210')} style={{ background: 'transparent', border: 'none', padding: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <strong>+91 74111 16694</strong>
+                <button onClick={() => window.open('tel:+917411116694')} style={{ background: 'transparent', border: 'none', padding: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <span className="material-icons" style={{ color: '#4caf50', fontSize: '20px' }}>call</span>
                 </button>
               </div>
