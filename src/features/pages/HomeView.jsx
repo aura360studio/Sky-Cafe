@@ -144,7 +144,7 @@ export const HomeView = () => {
               <span style={{ color: 'var(--text-secondary)' }}>Instagram</span>
               <strong style={{ color: 'var(--accent-color)' }}>@SkyCafeKitchen</strong>
             </div>
-            <Button variant="outline" style={{ width: '100%', background: 'transparent', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }} onClick={() => window.open('https://search.google.com/local/writereview?placeid=ChIJi3-l85wVrjsR81qY_eG1YgE', '_blank')}>
+            <Button variant="outline" style={{ width: '100%', background: 'transparent', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }} onClick={() => window.open('https://www.google.com/search?q=Sky+Cafe+%26+Kitchen+Nagarbhavi+Bangalore#lrd=0x3bae3d00307f03f5:0x617ecb8b45905812,3,1', '_blank')}>
               ⭐️ Leave a Google Review
             </Button>
           </Card>
