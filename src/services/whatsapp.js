@@ -10,8 +10,8 @@ export const generateDineInUrl = (cartItems, customerName, tableNumber, cartTota
   return BASE_URL + encodeURIComponent(text);
 };
 
-export const generateDeliveryUrl = (cartItems, customerName, address, distance, cartTotal) => {
-  let text = `*NEW DELIVERY ORDER* 🛵\n*Name:* ${customerName}\n*Address:* ${address}\n*Distance:* ${distance}km\n------------------------\n`;
+export const generateDeliveryUrl = (cartItems, customerName, cartTotal) => {
+  let text = `*NEW DELIVERY ORDER* 🛵\n*Name:* ${customerName}\n------------------------\n`;
   cartItems.forEach(item => {
     text += `${item.quantity}x ${item.title} - ₹${item.lineTotal.toFixed(2)}\n`;
   });

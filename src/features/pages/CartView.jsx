@@ -23,8 +23,7 @@ export const CartView = () => {
       clearCart();
       setActivePage(APP_PAGES.ORDER_SUCCESS);
     } else {
-      if (!location) return alert("Please provide your valid delivery address.");
-      window.open(generateDeliveryUrl(cartItems, customerName, location, 3.5, cartTotal), '_blank');
+      window.open(generateDeliveryUrl(cartItems, customerName, cartTotal), '_blank');
       clearCart();
       setActivePage(APP_PAGES.ORDER_SUCCESS);
     }
@@ -118,29 +117,22 @@ export const CartView = () => {
       </div>
 
       <div style={{ background: 'var(--surface-color)', padding: '20px', borderRadius: '12px', marginBottom: '24px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        {mode === APP_MODES.DINE_IN ? (
+        {mode === APP_MODES.DINE_IN && (
           <Input 
             label="Table Number *" 
             placeholder="e.g. 12" 
             value={tableNumber || ''} 
             onChange={(e) => setTableNumber(e.target.value)} 
           />
-        ) : (
-          <Input 
-            label="Delivery Address *" 
-            placeholder="Apt, Street Name, Details..." 
-            value={location || ''} 
-            onChange={(e) => setLocation(e.target.value)} 
-          />
         )}
         
-          <Input 
-            label="Customer Name *" 
-            placeholder="Your full name" 
-            value={customerName || ''} 
-            onChange={(e) => setCustomerName(e.target.value)} 
-          />
-        </div>
+        <Input 
+          label="Customer Name *" 
+          placeholder="Your full name" 
+          value={customerName || ''} 
+          onChange={(e) => setCustomerName(e.target.value)} 
+        />
+      </div>
 
         <Button variant="primary" size="lg" style={{ width: '100%', padding: '14px 0' }} onClick={handleCheckout}>
           Send Secure WhatsApp Order
