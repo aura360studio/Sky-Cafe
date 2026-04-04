@@ -181,18 +181,73 @@ export const HomeView = () => {
 
   if (mode === APP_MODES.DELIVERY) {
     return (
-      <div style={{ padding: '16px' }}>
+      <div style={{ padding: '16px', paddingBottom: '40px' }}>
+        
+        <h1 style={{ fontSize: '24px', fontWeight: '800', marginBottom: '8px', color: 'var(--text-primary)' }}>
+          Welcome to Sky Cafe & Kitchen
+        </h1>
         <RestaurantStatusBanner />
+
+        {/* 1. Today's Special */}
+        <SectionTitle title="Today's Special" />
         <SpecialBanner special={todaysSpecial} />
-        <SectionTitle title="Swift Delivery" subtitle="Hot and fresh, straight to your door." />
-        <Card style={{ marginBottom: '16px' }}>
-           <h3>Delivery Info</h3>
-           <p style={{ margin: '8px 0', fontSize: '14px', color: 'var(--text-secondary)' }}>Distance from cafe: <strong style={{ color: 'var(--text-primary)' }}>Checking...</strong></p>
-           <p style={{ margin: '8px 0', fontSize: '14px', color: 'var(--text-secondary)' }}>Est. Time: <strong style={{ color: 'var(--text-primary)' }}>30-45 mins</strong></p>
+
+        {/* 2. Delivery Information */}
+        <SectionTitle title="Delivery Information" />
+        <Card style={{ 
+          background: 'var(--surface-color)', 
+          borderLeft: '4px solid var(--accent-color)',
+          marginBottom: '24px' 
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-secondary)' }}>Swift & Safe</p>
+              <h3 style={{ margin: '4px 0 0 0', fontSize: '16px' }}>Doorstep Delivery</h3>
+            </div>
+            <Button variant="outline" style={{ fontSize: '13px', padding: '8px 12px' }} onClick={() => alert("How Delivery Works: \n1. Choose your favorites\n2. Checkout via WhatsApp\n3. Our rider delivers in 30-45 mins!")}>
+              How Delivery Works →
+            </Button>
+          </div>
         </Card>
-        <Button variant="primary" style={{ width: '100%', marginTop: '10px' }} onClick={() => setActivePage(APP_PAGES.MENU)}>
-          Explore the menu
+
+        {/* 3. Popular Delivery Items */}
+        <SectionTitle title="Popular Delivery Items" subtitle="Top favorites for delivery" />
+        <Card style={{ padding: 0, overflow: 'hidden', marginBottom: '24px' }}>
+          {popularItems.slice(0, 3).map((item, index) => (
+            <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderBottom: index < 2 ? '1px solid var(--border-color)' : 'none' }}>
+              <div>
+                <span style={{ fontWeight: '500', display: 'block' }}>{item.title}</span>
+                <span style={{ color: 'var(--accent-color)', fontWeight: 'bold' }}>₹{item.price.toFixed(2)}</span>
+              </div>
+              <Button variant="outline" style={{ padding: '6px 12px', fontSize: '13px' }} onClick={() => addToCart(item)}>Add</Button>
+            </div>
+          ))}
+        </Card>
+
+        {/* 4. Combo Offers */}
+        <SectionTitle title="Combo Offers" subtitle="Special value for you" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
+          {promoCombos.map(combo => (
+            <Card key={combo.id} style={{ background: 'var(--surface-color)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div style={{ flex: 1, paddingRight: '12px' }}>
+                  <h3 style={{ margin: 0, marginBottom: '4px', fontSize: '16px' }}>{combo.title}</h3>
+                  <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)' }}>{combo.description}</p>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{ fontWeight: 'bold', color: 'var(--accent-color)', display: 'block', marginBottom: '8px' }}>₹{combo.price.toFixed(2)}</span>
+                  <Button variant="outline" style={{ padding: '6px 12px', fontSize: '13px' }} onClick={() => addToCart(combo)}>Add</Button>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {/* 5. Full Delivery Menu Button */}
+        <Button variant="primary" style={{ width: '100%', padding: '14px', fontSize: '16px', fontWeight: '600', marginBottom: '24px' }} onClick={() => setActivePage(APP_PAGES.MENU)}>
+          View Full Delivery Menu
         </Button>
+
       </div>
     );
   }
