@@ -159,16 +159,16 @@ export const HomeView = () => {
                 : "We'll send a WhatsApp ping to our team so they can come right over."}
             </p>
             <Input 
-              label="Table Number *" 
-              placeholder="e.g. 12" 
-              value={tableNumber || ''} 
-              onChange={(e) => setTableNumber(e.target.value)} 
-            />
-            <Input 
               label="Your Name *" 
               placeholder="Your full name" 
               value={customerName || ''} 
               onChange={(e) => setCustomerName(e.target.value)} 
+            />
+            <Input 
+              label="Table Number *" 
+              placeholder="e.g. 12" 
+              value={tableNumber || ''} 
+              onChange={(e) => setTableNumber(e.target.value)} 
             />
             <Button variant="primary" style={{ marginTop: '8px' }} onClick={submitQuickActionModal}>
               {pendingAction === 'bill' ? "Request Bill Now" : "Ping Waiter Now"}
@@ -183,9 +183,6 @@ export const HomeView = () => {
     return (
       <div style={{ padding: '16px', paddingBottom: '40px' }}>
         
-        <h1 style={{ fontSize: '24px', fontWeight: '800', marginBottom: '8px', color: 'var(--text-primary)' }}>
-          Welcome to Sky Cafe & Kitchen
-        </h1>
         <RestaurantStatusBanner />
 
         {/* 1. Today's Special */}

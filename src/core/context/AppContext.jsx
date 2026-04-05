@@ -29,8 +29,29 @@ export const AppProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   
   // Checkout Context Metadata
-  const [customerName, setCustomerName] = useState('');
-  const [tableNumber, setTableNumber] = useState('');
+  const [customerName, setCustomerNameState] = useState(() => {
+    try { return window.localStorage.getItem('sky_customer_name') || ''; } catch (e) { return ''; }
+  });
+  const [tableNumber, setTableNumberState] = useState(() => {
+    try { return window.localStorage.getItem('sky_table_number') || ''; } catch (e) { return ''; }
+  });
+  
+  const setCustomerName = (name) => {
+    setCustomerNameState(name);
+    try {
+      if (name) window.localStorage.setItem('sky_customer_name', name);
+      else window.localStorage.removeItem('sky_customer_name');
+    } catch (e) {}
+  };
+
+  const setTableNumber = (table) => {
+    setTableNumberState(table);
+    try {
+      if (table) window.localStorage.setItem('sky_table_number', table);
+      else window.localStorage.removeItem('sky_table_number');
+    } catch (e) {}
+  };
+
   const [location, setLocation] = useState(''); 
   const [distance, setDistance] = useState(null); 
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -76,8 +97,12 @@ export const AppProvider = ({ children }) => {
 
   const clearSessionOrders = () => {
     setSessionOrders([]);
+    setCustomerNameState('');
+    setTableNumberState('');
     try {
       window.localStorage.removeItem('sky_session_orders');
+      window.localStorage.removeItem('sky_customer_name');
+      window.localStorage.removeItem('sky_table_number');
     } catch (error) {}
   };
 

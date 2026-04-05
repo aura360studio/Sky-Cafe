@@ -129,6 +129,13 @@ export const CartView = () => {
       </div>
 
       <div style={{ background: 'var(--surface-color)', padding: '20px', borderRadius: '12px', marginBottom: '24px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <Input 
+          label="Customer Name *" 
+          placeholder="Your full name" 
+          value={customerName || ''} 
+          onChange={(e) => setCustomerName(e.target.value)} 
+        />
+
         {mode === APP_MODES.DINE_IN && (
           <Input 
             label="Table Number *" 
@@ -137,18 +144,23 @@ export const CartView = () => {
             onChange={(e) => setTableNumber(e.target.value)} 
           />
         )}
-        
-        <Input 
-          label="Customer Name *" 
-          placeholder="Your full name" 
-          value={customerName || ''} 
-          onChange={(e) => setCustomerName(e.target.value)} 
-        />
       </div>
 
         <Button variant="primary" size="lg" style={{ width: '100%', padding: '14px 0' }} onClick={handleCheckout}>
           Send Secure WhatsApp Order
         </Button>
+
+        <p style={{ 
+          fontSize: '12px', 
+          color: 'var(--text-secondary)', 
+          textAlign: 'center', 
+          marginTop: '12px', 
+          fontStyle: 'italic',
+          lineHeight: '1.4',
+          padding: '0 20px'
+        }}>
+          Note: The final printed bill amount may vary slightly based on manual additions or applicable discounts at the restaurant.
+        </p>
 
         <Modal isOpen={isClearModalOpen} onClose={() => setIsClearModalOpen(false)} title="Clear Cart?">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
