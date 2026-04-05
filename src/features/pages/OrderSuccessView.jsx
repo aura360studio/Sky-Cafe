@@ -1,16 +1,36 @@
+import { motion } from 'framer-motion';
 import { useApp, APP_PAGES, APP_MODES } from '../../core/context/AppContext';
 import { Button } from '../../shared/components/Button';
 import { SectionTitle } from '../../shared/components/SectionTitle';
 
 export const OrderSuccessView = () => {
-  const { setActivePage, setMode } = useApp();
+  const { setActivePage, setMode, mode } = useApp();
 
   return (
     <div style={{ padding: '0 16px', paddingBottom: '40px', textAlign: 'center', paddingTop: '40px' }}>
-      <div style={{ fontSize: '48px', marginBottom: '16px', color: 'var(--accent-color)' }}>✓</div>
-      <SectionTitle title="Order Sent to Sky Cafe" subtitle="Order sent successfully" />
+      <motion.div 
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 260, damping: 20 }}
+        style={{ fontSize: '64px', marginBottom: '16px', color: 'var(--accent-color)' }}
+      >
+        ✓
+      </motion.div>
       
-      <div style={{ background: 'var(--surface-color)', padding: '24px', borderRadius: '12px', marginBottom: '32px', border: '1px solid var(--border-color)', textAlign: 'left' }}>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <SectionTitle title="Order Sent to Sky Cafe" subtitle="Order sent successfully" />
+      </motion.div>
+      
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.4 }}
+        style={{ background: 'var(--surface-color)', padding: '24px', borderRadius: '12px', marginBottom: '32px', border: '1px solid var(--border-color)', textAlign: 'left' }}
+      >
         <p style={{ marginBottom: '16px', lineHeight: '1.5' }}>
           We hope you have successfully shared your order details on WhatsApp.
         </p>
@@ -36,9 +56,14 @@ export const OrderSuccessView = () => {
           Average preparation time: {mode === APP_MODES.DINE_IN ? '15–20 minutes' : '30–45 minutes'}.<br />
           Thank you for visiting Sky Cafe & Kitchen.
         </p>
-      </div>
+      </motion.div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6 }}
+        style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+      >
         <Button variant="primary" size="lg" onClick={() => setActivePage(APP_PAGES.MENU)}>
           Continue Menu
         </Button>
@@ -48,7 +73,7 @@ export const OrderSuccessView = () => {
         <Button variant="outline" size="lg" onClick={() => setActivePage(APP_PAGES.HOME)} style={{ background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}>
           Go to Home
         </Button>
-      </div>
+      </motion.div>
     </div>
   );
 };

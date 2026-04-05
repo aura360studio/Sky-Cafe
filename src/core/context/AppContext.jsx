@@ -20,6 +20,9 @@ export const APP_PAGES = {
 };
 
 export const AppProvider = ({ children }) => {
+  // Startup State
+  const [isStartupComplete, setIsStartupComplete] = useState(false);
+
   // Navigation State
   const [mode, setMode] = useState(APP_MODES.DINE_IN);
   const [activePage, setActivePage] = useState(APP_PAGES.HOME);
@@ -115,9 +118,11 @@ export const AppProvider = ({ children }) => {
   const handleSetMode = (newMode) => {
     setMode(newMode);
     setActivePage(APP_PAGES.HOME);
+    setIsStartupComplete(true);
   };
 
   const value = {
+    isStartupComplete, setIsStartupComplete,
     mode, setMode: handleSetMode,
     activePage, setActivePage,
     isHamburgerOpen, setIsHamburgerOpen,

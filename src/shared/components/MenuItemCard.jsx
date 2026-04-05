@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { Button } from './Button';
 
 export const MenuItemCard = ({ item, onAdd }) => {
@@ -13,7 +14,13 @@ export const MenuItemCard = ({ item, onAdd }) => {
       </div>
       <div className="item-action">
         {/* {item.image && <img src={item.image} alt={item.title} />} */}
-        <Button variant="primary" size="sm" onClick={() => onAdd(item)}>Add</Button>
+        <motion.div
+          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 400, damping: 17 }}
+        >
+          <Button variant="primary" size="sm" onClick={() => onAdd(item)}>Add</Button>
+        </motion.div>
       </div>
     </div>
   );

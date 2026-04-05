@@ -1,20 +1,20 @@
 {
   "todaysSpecial": {
-    "id": "spec_01",
-    "title": "Wagyu Smash Burger Combo",
-    "description": "Our signature Wagyu Burger + Fries + Drink of your choice!",
-    "price": 1999.00,
+    "id": "spec_sky_platter",
+    "title": "Chicken Sky Special Platter",
+    "description": "Our signature spicy chicken served with aromatic Ghee Rice and a refreshing Classic Mojito.",
+    "price": 499.00,
     "image": ""
   },
   "popularItems": [
-    { "id": "pop_1", "title": "Chicken Burger", "price": 450.00 },
-    { "id": "pop_2", "title": "Alfredo Pasta", "price": 650.00 },
-    { "id": "pop_3", "title": "Mojito", "price": 300.00 },
-    { "id": "pop_4", "title": "Chicken Fried Rice", "price": 400.00 },
-    { "id": "pop_5", "title": "Brownie Ice Cream", "price": 350.00 }
+    { "id": "rice_chkbir", "title": "Chicken Biryani", "price": 250.00 },
+    { "id": "curr_pantikmas", "title": "Paneer Tikka Masala", "price": 280.00 },
+    { "id": "frie_peri", "title": "Peri Peri French Fries", "price": 160.00 },
+    { "id": "ock_mojito", "title": "Classic Mojito", "price": 120.00 },
+    { "id": "dess_tres", "title": "Tres Leches", "price": 200.00 }
   ],
   "promoCombos": [
-    { "id": "combo_1", "title": "Couple Combo", "description": "Burger + Pasta + 2 Drinks", "price": 1400.00 },
-    { "id": "combo_2", "title": "Family Combo", "description": "Pizza + Fried Rice + Starter + Drinks", "price": 2999.00 }
+    { "id": "combo_veg_starter", "title": "Veg Starter Combo", "description": "Gobi 65 + Veg Fried Rice + Soft Drink", "price": 449.00 },
+    { "id": "combo_nv_feast", "title": "Non-Veg Feast", "description": "Chicken 65 + Chicken Biryani + Classic Mojito", "price": 599.00 }
   ]
 }

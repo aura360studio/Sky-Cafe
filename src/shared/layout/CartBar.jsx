@@ -1,16 +1,26 @@
+import { motion, AnimatePresence } from 'framer-motion';
 import { useApp, APP_PAGES, APP_MODES } from '../../core/context/AppContext';
 
 export const CartBar = () => {
   const { mode, cartItemCount, cartTotal, setActivePage, activePage } = useApp();
 
-  // Hide the bar if cart is empty, OR if we are ALREADY on the cart page!
-  // Also hide if in NIGHT_LIFE mode
-  if (cartItemCount === 0 || activePage === APP_PAGES.CART || mode === APP_MODES.NIGHT_LIFE) return null;
+  const isVisible = cartItemCount > 0 && activePage !== APP_PAGES.CART && mode !== APP_MODES.NIGHT_LIFE;
 
   return (
-    <div className="cart-bar" onClick={() => setActivePage(APP_PAGES.CART)}>
-      <span>{cartItemCount} Items | ₹{cartTotal.toFixed(2)}</span>
-      <span>Confirm Order &gt;</span>
-    </div>
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div 
+          className="cart-bar" 
+          onClick={() => setActivePage(APP_PAGES.CART)}
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 100, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        >
+          <span>{cartItemCount} Items | ₹{cartTotal.toFixed(2)}</span>
+          <span>Confirm Order &gt;</span>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

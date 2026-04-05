@@ -1,3 +1,4 @@
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { useApp, APP_MODES } from '../../core/context/AppContext';
 import { Modal } from '../components/Modal';
@@ -60,29 +61,38 @@ export const Header = () => {
       <header className="header" style={{ justifyContent: 'space-between' }}>
         <h2 style={{ fontSize: '18px', margin: 0, fontWeight: 700 }}>Sky Cafe</h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <select 
-            value={mode} 
-            onChange={handleModeChange}
-            style={{
-              background: 'var(--accent-color)',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '20px',
-              padding: '6px 16px',
-              fontSize: '14px',
-              fontWeight: '600',
-              outline: 'none',
-              cursor: 'pointer',
-              appearance: 'none',
-              WebkitAppearance: 'none',
-              textAlign: 'center',
-              boxShadow: '0 2px 8px rgba(16, 163, 127, 0.3)'
-            }}
-          >
-            <option value={APP_MODES.DINE_IN}>Dine In ▼</option>
-            <option value={APP_MODES.DELIVERY}>Delivery ▼</option>
-            <option value={APP_MODES.NIGHT_LIFE}>Night Life ▼</option>
-          </select>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={mode}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.2 }}
+            >
+              <select 
+                value={mode} 
+                onChange={handleModeChange}
+                style={{
+                  background: 'var(--accent-color)',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '20px',
+                  padding: '6px 16px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  outline: 'none',
+                  cursor: 'pointer',
+                  appearance: 'none',
+                  WebkitAppearance: 'none',
+                  textAlign: 'center',
+                  boxShadow: '0 2px 8px rgba(16, 163, 127, 0.3)'
+                }}
+              >
+                <option value={APP_MODES.DINE_IN}>Dine In ▼</option>
+                <option value={APP_MODES.DELIVERY}>Delivery ▼</option>
+                <option value={APP_MODES.NIGHT_LIFE}>Night Life ▼</option>
+              </select>
+            </motion.div>
+          </AnimatePresence>
           <button 
             className="icon-btn" 
             onClick={() => setIsHamburgerOpen(true)}
