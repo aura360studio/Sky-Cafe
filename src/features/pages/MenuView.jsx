@@ -59,7 +59,7 @@ export const MenuView = () => {
         ))}
       </div>
       
-      <div style={{ paddingBottom: '120px' }}>
+      <div style={{ paddingBottom: '70px' }}>
         {filteredItems.map(item => (
           <MenuItemCard 
             key={item.id} 

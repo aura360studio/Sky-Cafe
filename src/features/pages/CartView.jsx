@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useApp, APP_MODES, APP_PAGES } from '../../core/context/AppContext';
 import { Button } from '../../shared/components/Button';
 import { Input } from '../../shared/components/Input';
@@ -87,8 +88,17 @@ export const CartView = () => {
           </div>
       
       <div style={{ marginBottom: '20px' }}>
-        {cartItems.map(item => (
-          <div key={item.cartItemId} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '1px solid var(--border-color)' }}>
+        <AnimatePresence mode="popLayout">
+          {cartItems.map(item => (
+            <motion.div 
+              key={item.cartItemId} 
+              layout
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '1px solid var(--border-color)' }}
+            >
             <div>
               <p style={{ margin: 0, fontWeight: 'bold' }}>{item.title}</p>
               <p style={{ margin: '4px 0', fontSize: '13px', color: 'var(--text-secondary)' }}>
@@ -103,7 +113,14 @@ export const CartView = () => {
                 >
                   -
                 </button>
-                <span style={{ fontSize: '14px', fontWeight: '500', width: '20px', textAlign: 'center' }}>{item.quantity}</span>
+                <motion.span 
+                  key={item.quantity}
+                  initial={{ scale: 1.2, color: 'var(--accent-color)' }}
+                  animate={{ scale: 1, color: 'var(--text-primary)' }}
+                  style={{ fontSize: '14px', fontWeight: 'bold', width: '20px', textAlign: 'center', display: 'inline-block' }}
+                >
+                  {item.quantity}
+                </motion.span>
                 <button 
                   onClick={() => updateCartItemQuantity(item.cartItemId, 1)}
                   style={{ background: 'transparent', color: 'var(--text-primary)', border: 'none', cursor: 'pointer', fontWeight: 'bold', padding: '4px 8px' }}
@@ -111,7 +128,14 @@ export const CartView = () => {
                   +
                 </button>
               </div>
-              <span style={{ fontWeight: 'bold', color: 'var(--accent-color)' }}>₹{item.lineTotal.toFixed(2)}</span>
+              <motion.span 
+                key={item.lineTotal}
+                initial={{ opacity: 0.5 }}
+                animate={{ opacity: 1 }}
+                style={{ fontWeight: 'bold', color: 'var(--accent-color)', minWidth: '60px', textAlign: 'right' }}
+              >
+                ₹{item.lineTotal.toFixed(2)}
+              </motion.span>
               <button 
                 onClick={() => removeFromCart(item.cartItemId)} 
                 style={{ background: 'rgba(229, 83, 75, 0.2)', color: 'var(--danger-color)', border: 'none', borderRadius: '4px', padding: '6px 10px', cursor: 'pointer', fontWeight: 'bold' }}
@@ -119,8 +143,9 @@ export const CartView = () => {
                 &times;
               </button>
             </div>
-          </div>
+          </motion.div>
         ))}
+        </AnimatePresence>
       </div>
       
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '20px', fontWeight: 'bold', marginBottom: '24px' }}>

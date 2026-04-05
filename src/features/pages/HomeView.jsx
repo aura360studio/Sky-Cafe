@@ -9,6 +9,7 @@ import { Input } from '../../shared/components/Input';
 import { getTodaysSpecial, getPopularItems, getPromoCombos } from '../../services/specialsService';
 import { generateCallWaiterUrl, generateRequestBillUrl } from '../../services/whatsapp';
 import { RestaurantStatusBanner } from '../../shared/components/RestaurantStatusBanner';
+import { InstallAppAction } from '../../shared/components/InstallAppAction';
 
 export const HomeView = () => {
   const todaysSpecial = getTodaysSpecial();
@@ -47,7 +48,7 @@ export const HomeView = () => {
   if (mode === APP_MODES.DINE_IN) {
     return (
       <>
-        <div style={{ padding: '16px', paddingBottom: '120px' }}>
+        <div style={{ padding: '16px', paddingBottom: '70px' }}>
           
           <RestaurantStatusBanner />
 
@@ -149,6 +150,9 @@ export const HomeView = () => {
             </Button>
           </Card>
 
+          {/* 7. Install App Section */}
+          <InstallAppAction />
+
         </div>
 
         <Modal isOpen={isQuickActionModalOpen} onClose={() => setIsQuickActionModalOpen(false)} title={pendingAction === 'bill' ? "Request Bill" : "Call Waiter"}>
@@ -181,7 +185,7 @@ export const HomeView = () => {
 
   if (mode === APP_MODES.DELIVERY) {
     return (
-      <div style={{ padding: '16px', paddingBottom: '120px' }}>
+      <div style={{ padding: '16px', paddingBottom: '70px' }}>
         
         <RestaurantStatusBanner />
 
@@ -244,6 +248,9 @@ export const HomeView = () => {
         <Button variant="primary" style={{ width: '100%', padding: '14px', fontSize: '16px', fontWeight: '600', marginBottom: '24px' }} onClick={() => setActivePage(APP_PAGES.MENU)}>
           View Full Delivery Menu
         </Button>
+
+        {/* 6. Install App Section */}
+        <InstallAppAction />
 
       </div>
     );

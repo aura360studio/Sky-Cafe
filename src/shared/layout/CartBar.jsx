@@ -17,8 +17,16 @@ export const CartBar = () => {
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
         >
-          <span>{cartItemCount} Items | ₹{cartTotal.toFixed(2)}</span>
-          <span>Confirm Order &gt;</span>
+          <motion.div 
+            style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}
+            key={cartItemCount}
+            initial={{ scale: 1.05 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 500, damping: 15 }}
+          >
+            <span>{cartItemCount} Items | ₹{cartTotal.toFixed(2)}</span>
+            <span>Confirm Order &gt;</span>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

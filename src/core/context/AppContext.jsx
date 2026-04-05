@@ -115,6 +115,45 @@ export const AppProvider = ({ children }) => {
   const cartItemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const sessionTotal = sessionOrders.reduce((acc, item) => acc + item.lineTotal, 0);
 
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstalled, setIsInstalled] = useState(false);
+  const [isiOS, setIsiOS] = useState(false);
+
+  useEffect(() => {
+    // 1. Check if already installed (standalone mode)
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+      setIsInstalled(true);
+    }
+
+    // 2. Detect iOS
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    setIsiOS(/iphone|ipad|ipod/.test(userAgent));
+
+    // 3. Capture beforeinstallprompt event (Android/Chrome)
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handler);
+    window.addEventListener('appinstalled', () => {
+      setIsInstalled(true);
+      setDeferredPrompt(null);
+    });
+
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallApp = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setDeferredPrompt(null);
+      }
+    }
+  };
+
   const handleSetMode = (newMode) => {
     setMode(newMode);
     setActivePage(APP_PAGES.HOME);
@@ -132,7 +171,8 @@ export const AppProvider = ({ children }) => {
     tableNumber, setTableNumber,
     location, setLocation,
     distance, setDistance,
-    selectedSlot, setSelectedSlot
+    selectedSlot, setSelectedSlot,
+    deferredPrompt, isInstalled, isiOS, handleInstallApp
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -59,8 +59,8 @@ body {
 .content-area {
   flex: 1;
   overflow-y: auto;
-  /* Ensure padding clears nav (70) + cart (60) + safe area + extra buffer (40) */
-  padding-bottom: calc(var(--nav-height) + var(--cart-bar-height) + 40px + env(safe-area-inset-bottom, 0px));
+  /* Ensure padding clears nav (70) + cart (60) + safe area + extra buffer (20) */
+  padding-bottom: calc(var(--nav-height) + var(--cart-bar-height) + 20px + env(safe-area-inset-bottom, 0px));
   padding-top: calc(var(--header-height) + 16px);
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
@@ -152,7 +152,7 @@ body {
 .cart-bar {
   position: absolute;
   /* Position above nav + safe area */
-  bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 12px);
+  bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 8px);
   width: calc(100% - 32px);
   margin: 0 16px;
   height: var(--cart-bar-height);
