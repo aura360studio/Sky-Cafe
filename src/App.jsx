@@ -24,7 +24,7 @@ const ViewRenderer = () => {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        style={{ height: '100%', width: '100%' }}
+        style={{ width: '100%' }}
       >
         {(() => {
           switch(activePage) {

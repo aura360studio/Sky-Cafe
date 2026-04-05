@@ -47,7 +47,7 @@ export const HomeView = () => {
   if (mode === APP_MODES.DINE_IN) {
     return (
       <>
-        <div style={{ padding: '16px', paddingBottom: '40px' }}>
+        <div style={{ padding: '16px', paddingBottom: '120px' }}>
           
           <RestaurantStatusBanner />
 
@@ -181,7 +181,7 @@ export const HomeView = () => {
 
   if (mode === APP_MODES.DELIVERY) {
     return (
-      <div style={{ padding: '16px', paddingBottom: '40px' }}>
+      <div style={{ padding: '16px', paddingBottom: '120px' }}>
         
         <RestaurantStatusBanner />
 
