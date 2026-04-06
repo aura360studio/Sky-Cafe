@@ -39,7 +39,7 @@ export const HamburgerMenu = () => {
   ];
 
   const getInitials = (name) => {
-    if (!name) return 'SS';
+    if (!name) return 'SC';
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
 
@@ -79,7 +79,7 @@ export const HamburgerMenu = () => {
             }}>
               {getInitials(customerName)}
             </div>
-            <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold', color: '#fff' }}>{customerName || 'Sokka Stark'}</h2>
+            <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold', color: '#fff' }}>{customerName || 'Sky Cafe'}</h2>
           </div>
 
           {/* Menu Sections (Cards) */}
