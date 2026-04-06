@@ -44,5 +44,14 @@ export default defineConfig(({ mode }) => ({
       }
     })
   ],
+  server: {
+    port: 5173,
+    strictPort: true,
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+      port: 5173,
+    },
+  },
   base: mode === 'production' ? '/Sky-Cafe/' : '/',
 }))

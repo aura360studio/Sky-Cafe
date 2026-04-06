@@ -10,6 +10,7 @@ import { getTodaysSpecial, getPopularItems, getPromoCombos } from '../../service
 import { getHeroContent, getServices } from '../../services/nightLifeService';
 import { generateCallWaiterUrl, generateRequestBillUrl } from '../../services/whatsapp';
 import { RestaurantStatusBanner } from '../../shared/components/RestaurantStatusBanner';
+import { Modal } from '../../shared/components/Modal';
 import { InstallAppAction } from '../../shared/components/InstallAppAction';
 
 export const HomeView = () => {
