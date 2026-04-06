@@ -84,7 +84,10 @@ export const ModeSelectionView = () => {
         ))}
       </div>
 
-      <motion.p
+      <motion.a
+        href="https://aura360studio.com/"
+        target="_blank"
+        rel="noopener noreferrer"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
@@ -93,11 +96,15 @@ export const ModeSelectionView = () => {
           fontSize: '11px', 
           color: 'var(--text-secondary)',
           textTransform: 'uppercase',
-          letterSpacing: '1.5px'
+          letterSpacing: '1.5px',
+          textDecoration: 'none',
+          borderBottom: '1px solid transparent',
+          transition: 'all 0.3s ease'
         }}
+        whileHover={{ color: 'var(--accent-color)', borderBottomColor: 'var(--accent-color)' }}
       >
-        Powered by Sky Cafe & Kitchen
-      </motion.p>
+        POWERED BY AURA 360 STUDIO
+      </motion.a>
     </div>
   );
 };

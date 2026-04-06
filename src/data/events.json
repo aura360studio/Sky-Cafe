@@ -1,0 +1,26 @@
+[
+  {
+    "id": "event-1",
+    "title": "Live Acoustic Night",
+    "date": "Saturdays",
+    "time": "7:30 PM Onwards",
+    "description": "Experience live acoustic performances under the Bangalore sky.",
+    "status": "Upcoming"
+  },
+  {
+    "id": "event-2",
+    "title": "IPL / Sports Screening",
+    "date": "Match Days",
+    "time": "Flexible",
+    "description": "Big screen match screening with special snack combos.",
+    "status": "Active"
+  },
+  {
+    "id": "event-3",
+    "title": "Rooftop Buffet Night",
+    "date": "Select Sundays",
+    "time": "7:00 PM - 11:00 PM",
+    "description": "Premium multi-cuisine buffet on the open terrace.",
+    "status": "Registration Open"
+  }
+]

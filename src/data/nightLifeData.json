@@ -1,0 +1,74 @@
+{
+  "hero": {
+    "title": "Sky @ Night",
+    "subtitle": "Rooftop Experience",
+    "description": "Enjoy your evenings at Sky Cafe with rooftop dining, live music, candle light dinners, sports screenings, buffet nights, and private celebrations."
+  },
+  "services": [
+    {
+      "id": "roof-dining",
+      "title": "Rooftop Dining",
+      "icon": "restaurant",
+      "description": "Open-air rooftop dining with a relaxed atmosphere and city views. Perfect for evenings with friends."
+    },
+    {
+      "id": "live-music",
+      "title": "Live Music",
+      "icon": "music_note",
+      "description": "Hosted on selected evenings. Follow our updates for upcoming performances."
+    },
+    {
+      "id": "candle-dinner",
+      "title": "Candle Light Dinner",
+      "icon": "favorite",
+      "description": "Premium setup for special occasions, anniversaries, and date nights. Prior booking required."
+    },
+    {
+      "id": "sports-screening",
+      "title": "Sports Screening",
+      "icon": "sports_cricket",
+      "description": "Watch live major sports events on our big screen with food & drinks."
+    },
+    {
+      "id": "buffet-nights",
+      "title": "Buffet Nights",
+      "icon": "layers",
+      "description": "Organized on selected weekends. Menu and pricing announced in advance."
+    },
+    {
+      "id": "birthday-party",
+      "title": "Birthday Celebrations",
+      "icon": "cake",
+      "description": "Celebrate with custom decorations and music. Note: External cake cutting charges: ₹500."
+    },
+    {
+      "id": "corporate-events",
+      "title": "Corporate Events",
+      "icon": "business",
+      "description": "Plan your team outings, corporate dinners, and business celebrations on our rooftop."
+    },
+    {
+      "id": "private-events",
+      "title": "Private Party Bookings",
+      "icon": "celebration",
+      "description": "Perfect for engagement parties, anniversaries, and large get-togethers."
+    }
+  ],
+  "areas": [
+    {
+      "id": "open-rooftop",
+      "title": "Open Rooftop (Shelter-less)",
+      "description": "4 exclusive tables with stunning city landscape views."
+    },
+    {
+      "id": "main-section",
+      "title": "Main Rooftop Section",
+      "description": "10+ tables in a vibrant open-air atmosphere."
+    },
+    {
+      "id": "smoking-area",
+      "title": "Smoking Area",
+      "description": "Dedicated section with 4 specialized tables."
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "2026-04-06": [
+    { "time": "6:00 PM", "status": "available" },
+    { "time": "7:00 PM", "status": "few" },
+    { "time": "8:00 PM", "status": "full" },
+    { "time": "9:00 PM", "status": "available" },
+    { "time": "10:00 PM", "status": "available" }
+  ],
+  "2026-04-07": [
+    { "time": "6:00 PM", "status": "available" },
+    { "time": "7:00 PM", "status": "available" },
+    { "time": "8:00 PM", "status": "few" },
+    { "time": "9:00 PM", "status": "full" },
+    { "time": "10:00 PM", "status": "available" }
+  ],
+  "2026-04-08": [
+    { "time": "6:00 PM", "status": "available" },
+    { "time": "7:00 PM", "status": "available" },
+    { "time": "8:00 PM", "status": "available" },
+    { "time": "9:00 PM", "status": "few" },
+    { "time": "10:00 PM", "status": "available" }
+  ]
+}

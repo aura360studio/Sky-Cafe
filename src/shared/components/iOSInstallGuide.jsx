@@ -1,9 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
 import { Modal } from './Modal';
 import { Button } from './Button';
 
-export const iOSInstallGuide = ({ isOpen, onClose }) => {
+export const IOSInstallGuide = ({ isOpen, onClose }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Install Sky Cafe App">
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '10px 0' }}>
@@ -28,7 +26,7 @@ export const iOSInstallGuide = ({ isOpen, onClose }) => {
               color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 
             }}>2</div>
             <p style={{ margin: 0, fontSize: '14px' }}>
-              Scroll down and select <strong>"Add to Home Screen"</strong> <span style={{ fontSize: '18px' }}>➕</span>.
+              Scroll down and select <strong>&quot;Add to Home Screen&quot;</strong> <span style={{ fontSize: '18px' }}>➕</span>.
             </p>
           </div>
 
@@ -38,7 +36,7 @@ export const iOSInstallGuide = ({ isOpen, onClose }) => {
               color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 
             }}>3</div>
             <p style={{ margin: 0, fontSize: '14px' }}>
-              Tap <strong>"Add"</strong> in the top right corner to finish! ✨
+              Tap <strong>&quot;Add&quot;</strong> in the top right corner to finish! ✨
             </p>
           </div>
         </div>

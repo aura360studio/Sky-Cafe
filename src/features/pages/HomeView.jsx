@@ -1,12 +1,13 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useApp, APP_MODES, APP_PAGES } from '../../core/context/AppContext';
 import { SpecialBanner } from '../../shared/components/SpecialBanner';
 import { SectionTitle } from '../../shared/components/SectionTitle';
 import { Button } from '../../shared/components/Button';
 import { Card } from '../../shared/components/Card';
-import { Modal } from '../../shared/components/Modal';
 import { Input } from '../../shared/components/Input';
 import { getTodaysSpecial, getPopularItems, getPromoCombos } from '../../services/specialsService';
+import { getHeroContent, getServices } from '../../services/nightLifeService';
 import { generateCallWaiterUrl, generateRequestBillUrl } from '../../services/whatsapp';
 import { RestaurantStatusBanner } from '../../shared/components/RestaurantStatusBanner';
 import { InstallAppAction } from '../../shared/components/InstallAppAction';
@@ -118,7 +119,7 @@ export const HomeView = () => {
 
           {/* 6. Cafe Information */}
           <SectionTitle title="Cafe Info" subtitle="Everything you need" />
-          <Card style={{ fontSize: '14px', lineHeight: '1.8' }}>
+          <Card style={{ fontSize: '14px', lineHeight: '1.8', marginBottom: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px', marginBottom: '8px', alignItems: 'center' }}>
               <span style={{ color: 'var(--text-secondary)' }}>WiFi Password</span>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -257,16 +258,75 @@ export const HomeView = () => {
   }
 
   if (mode === APP_MODES.NIGHT_LIFE) {
+    const hero = getHeroContent();
+    const services = getServices();
+
     return (
-      <div style={{ padding: '0 16px' }}>
-        <SectionTitle title="Sky Night Life" subtitle="Unforgettable evenings." />
-        <Card style={{ background: 'linear-gradient(45deg, #2a0845, #6441A5)', border: 'none', marginBottom: '16px' }}>
-           <h3 style={{ color: '#fff', marginBottom: '8px' }}>Friday Sufi Night</h3>
-           <p style={{ color: '#ccc', fontSize: '14px' }}>Join us this weekend for an incredible live performance mapped perfectly under the stars.</p>
+      <div style={{ padding: '0 16px', paddingBottom: '80px' }}>
+        {/* Night Life Hero */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          style={{ 
+            padding: '40px 20px', 
+            borderRadius: '20px', 
+            background: 'linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url("https://images.unsplash.com/photo-1541571589417-649033327d97?q=80&w=1000&auto=format&fit=crop") center/cover',
+            textAlign: 'center',
+            marginBottom: '32px',
+            marginTop: '16px'
+          }}
+        >
+          <h1 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '8px', color: '#fff' }}>{hero.title}</h1>
+          <p style={{ color: 'var(--accent-color)', fontWeight: 'bold', fontSize: '18px', marginBottom: '16px' }}>{hero.subtitle}</p>
+          <p style={{ color: '#ccc', lineHeight: '1.6', fontSize: '15px' }}>{hero.description}</p>
+          
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '24px' }}>
+            <Button variant="primary" onClick={() => setActivePage(APP_PAGES.BOOKINGS)}>Book Now</Button>
+            <Button variant="outline" style={{ color: '#fff', borderColor: '#fff' }} onClick={() => setActivePage(APP_PAGES.EVENTS)}>View Events</Button>
+          </div>
+        </motion.div>
+
+        <SectionTitle title="What We Offer" subtitle="Experience the best of Sky rooftop" />
+        
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '32px' }}>
+          {services.map(service => (
+            <Card 
+              key={service.id} 
+              onClick={() => setActivePage(APP_PAGES.SERVICES)}
+              style={{ 
+                padding: '20px', 
+                textAlign: 'center', 
+                background: 'var(--surface-color)', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center',
+                gap: '12px'
+              }}
+            >
+              <div style={{ 
+                width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(100, 65, 165, 0.1)', 
+                display: 'flex', alignItems: 'center', justifyContent: 'center' 
+              }}>
+                <span className="material-icons" style={{ color: 'var(--accent-color)' }}>{service.icon}</span>
+              </div>
+              <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 'bold' }}>{service.title}</h3>
+            </Card>
+          ))}
+        </div>
+
+        <Card style={{ background: 'var(--surface-color)', borderLeft: '4px solid var(--accent-color)' }}>
+          <h3 style={{ margin: 0, fontSize: '18px', marginBottom: '8px' }}>Private Event?</h3>
+          <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+            Planning a birthday or corporate gathering? Contact us for customized rooftop packages.
+          </p>
+          <Button 
+            variant="outline" 
+            style={{ marginTop: '16px', width: '100%' }} 
+            onClick={() => window.open('https://wa.me/917411116694?text=Hi, I am interested in booking a private event at Sky Cafe.', '_blank')}
+          >
+            Inquire via WhatsApp
+          </Button>
         </Card>
-        <Button variant="primary" style={{ width: '100%', marginTop: '10px' }} onClick={() => setActivePage(APP_PAGES.BOOKINGS)}>
-          See what's happening tonight
-        </Button>
       </div>
     );
   }

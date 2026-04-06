@@ -48,26 +48,18 @@ const MainExperience = () => {
   const { isStartupComplete } = useApp();
   const [showSplash, setShowSplash] = useState(true);
 
+  if (showSplash) {
+    return <SplashScreen key="splash" onFinish={() => setShowSplash(false)} />;
+  }
+
+  if (!isStartupComplete) {
+    return <ModeSelectionView key="selection" />;
+  }
+
   return (
-    <AnimatePresence mode="wait">
-      {showSplash ? (
-        <SplashScreen key="splash" onFinish={() => setShowSplash(false)} />
-      ) : !isStartupComplete ? (
-        <ModeSelectionView key="selection" />
-      ) : (
-        <motion.div
-           key="main"
-           initial={{ opacity: 0 }}
-           animate={{ opacity: 1 }}
-           transition={{ duration: 0.5 }}
-           style={{ height: '100%', width: '100%' }}
-        >
-          <MobileShell>
-            <ViewRenderer />
-          </MobileShell>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <MobileShell>
+      <ViewRenderer />
+    </MobileShell>
   );
 };
 

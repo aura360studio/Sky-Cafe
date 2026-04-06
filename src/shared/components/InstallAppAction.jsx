@@ -4,7 +4,7 @@ import { useApp } from '../../core/context/AppContext';
 import { Card } from './Card';
 import { Button } from './Button';
 import { SectionTitle } from './SectionTitle';
-import { iOSInstallGuide } from './iOSInstallGuide';
+import { IOSInstallGuide } from './IOSInstallGuide';
 
 export const InstallAppAction = () => {
   const { isInstalled, isiOS, handleInstallApp, deferredPrompt } = useApp();
@@ -57,7 +57,7 @@ export const InstallAppAction = () => {
         </Card>
       </motion.div>
 
-      <iOSInstallGuide 
+      <IOSInstallGuide 
         isOpen={isiOSModalOpen} 
         onClose={() => setIsiOSModalOpen(false)} 
       />
