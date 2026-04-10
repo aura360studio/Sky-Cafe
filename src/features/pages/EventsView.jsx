@@ -3,8 +3,10 @@ import { SectionTitle } from '../../shared/components/SectionTitle';
 import { Card } from '../../shared/components/Card';
 import { getEvents } from '../../services/nightLifeService';
 import { Button } from '../../shared/components/Button';
+import { generateGeneralInquiryUrl } from '../../services/whatsapp';
 
 export const EventsView = () => {
+
   const events = getEvents();
 
   return (
@@ -48,10 +50,11 @@ export const EventsView = () => {
                 <Button 
                   variant="outline" 
                   style={{ width: '100%' }}
-                  onClick={() => window.open('https://wa.me/917411116694?text=Hi, I want to inquire about the ' + event.title + ' event.', '_blank')}
+                  onClick={() => window.open(generateGeneralInquiryUrl(`the ${event.title} event`), '_blank')}
                 >
                   Inquire via WhatsApp
                 </Button>
+
               </div>
             </Card>
           </motion.div>

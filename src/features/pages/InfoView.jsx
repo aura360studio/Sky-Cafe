@@ -4,8 +4,10 @@ import { SectionTitle } from '../../shared/components/SectionTitle';
 import { Card } from '../../shared/components/Card';
 import { Button } from '../../shared/components/Button';
 import { calculateDistance, getDeliveryEstimate } from '../../services/location';
+import { WA_BUSINESS_NUMBER, generateGeneralInquiryUrl } from '../../services/whatsapp';
 
 export const InfoView = () => {
+
   const { setActivePage } = useApp();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -338,7 +340,7 @@ export const InfoView = () => {
         </div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '12px' }}>
           <span className="material-icons" style={{ fontSize: '18px', color: '#4caf50' }}>call</span>
-          <span style={{ fontWeight: '500' }}>+91 74111 16694</span>
+          <span style={{ fontWeight: '500' }}>{WA_BUSINESS_NUMBER}</span>
         </div>
       </Card>
 
@@ -351,7 +353,7 @@ export const InfoView = () => {
         <Button 
           variant="primary" 
           style={{ background: '#25d366', border: 'none', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-          onClick={() => window.open('https://wa.me/917411116694', '_blank')}
+          onClick={() => window.open(generateGeneralInquiryUrl('general support'), '_blank')}
         >
           <span className="material-icons">chat</span>
           Message us on WhatsApp

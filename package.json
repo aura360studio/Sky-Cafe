@@ -1,7 +1,7 @@
 {
   "name": "sky",
   "private": true,
-  "homepage": "https://aura360studio.github.io/Sky-Cafe/",
+  "homepage": "https://skycafe.aura360studio.com/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -10,9 +10,13 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "touch dist/.nojekyll && gh-pages -d dist -t"
+    "deploy": "touch dist/.nojekyll && gh-pages -d dist -t",
+    "db:seed": "node scripts/seed.js"
   },
+
   "dependencies": {
+    "@supabase/supabase-js": "^2.103.0",
+    "dotenv": "^17.4.1",
     "framer-motion": "^12.38.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

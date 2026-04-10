@@ -3,27 +3,42 @@ import { useApp, APP_MODES } from '../../core/context/AppContext';
 import { CategoryCard } from '../../shared/components/CategoryCard';
 import { MenuItemCard } from '../../shared/components/MenuItemCard';
 import { SectionTitle } from '../../shared/components/SectionTitle';
-import { getDineInCategories, getDeliveryCategories, getDineInItems, getDeliveryItems } from '../../services/menuService';
+
 
 export const MenuView = () => {
-  const dineInCategories = getDineInCategories();
-  const deliveryCategories = getDeliveryCategories();
-  const dineInItems = getDineInItems();
-  const deliveryItems = getDeliveryItems();
-
-  const { mode, addToCart } = useApp();
+  const { mode, addToCart, menuData, isDataLoading } = useApp();
 
   const isDelivery = mode === APP_MODES.DELIVERY;
-  const activeCategories = isDelivery ? deliveryCategories : dineInCategories;
-  const activeItems = isDelivery ? deliveryItems : dineInItems;
+  
+  // Filter categories based on mode (DINE_IN/DELIVERY)
+  const activeCategories = menuData.categories.filter(c => c.mode === (isDelivery ? 'DELIVERY' : 'DINE_IN'));
+  const activeItems = menuData.items.filter(i => 
+    menuData.categories.find(c => c.id === i.categoryId)?.mode === (isDelivery ? 'DELIVERY' : 'DINE_IN')
+  );
 
-  const [activeCat, setActiveCat] = useState(activeCategories[0]?.id);
+  const [activeCat, setActiveCat] = useState(null);
   const [vegOnly, setVegOnly] = useState(false);
+
+  // Initialize active category once data is loaded
+  useEffect(() => {
+    if (activeCategories.length > 0 && !activeCat) {
+      setActiveCat(activeCategories[0].id);
+    }
+  }, [activeCategories, activeCat]);
+
 
   // Reset active category when changing modes
   useEffect(() => {
     setActiveCat(activeCategories[0]?.id);
   }, [mode, activeCategories]);
+
+  if (isDataLoading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+        <div className="loader"></div>
+      </div>
+    );
+  }
 
   if (mode === APP_MODES.NIGHT_LIFE) {
     return (
@@ -37,6 +52,7 @@ export const MenuView = () => {
   const filteredItems = activeItems.filter(item => 
     item.categoryId === activeCat && (!vegOnly || item.isVegetarian)
   );
+
 
   return (
     <div style={{ padding: '0 16px' }}>

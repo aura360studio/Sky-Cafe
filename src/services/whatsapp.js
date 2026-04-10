@@ -1,5 +1,7 @@
 const WA_NUMBER = "917411116694"; // Configurable constant
+export const WA_BUSINESS_NUMBER = "+91 74111 16694";
 const BASE_URL = `https://wa.me/${WA_NUMBER}?text=`;
+
 
 export const generateDineInUrl = (cartItems, customerName, tableNumber, cartTotal) => {
   let text = `*NEW DINE-IN ORDER* 🍽️\n*Name:* ${customerName}\n*Table:* ${tableNumber}\n------------------------\n`;
@@ -59,3 +61,14 @@ export const generateEventBookingUrl = (type, data) => {
   let text = `*${type} Booking – Sky Cafe* ✨\n\n*Name:* ${name}\n*Phone:* ${phone}\n*Date:* ${date}\n*Guests:* ${guests}\n*Details:* ${description || 'N/A'}`;
   return BASE_URL + encodeURIComponent(text);
 };
+
+export const generateGeneralInquiryUrl = (subject) => {
+  let text = `Hi, I have an inquiry about ${subject}.`;
+  return BASE_URL + encodeURIComponent(text);
+};
+
+export const generatePrivateEventUrl = () => {
+  let text = `Hi, I am interested in booking a private event at Sky Cafe.`;
+  return BASE_URL + encodeURIComponent(text);
+};
+

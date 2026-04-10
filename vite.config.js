@@ -53,5 +53,5 @@ export default defineConfig(({ mode }) => ({
       port: 5173,
     },
   },
-  base: mode === 'production' ? '/Sky-Cafe/' : '/',
+  base: '/',
 }))

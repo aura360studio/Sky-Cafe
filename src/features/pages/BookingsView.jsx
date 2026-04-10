@@ -76,7 +76,10 @@ export const BookingsView = () => {
       url = generateEventBookingUrl(selectedService.title, { ...commonData, description: specialRequest });
     }
 
-    if (url) window.open(url, '_blank');
+    if (url) {
+      window.open(url, '_blank');
+      setStep(6);
+    }
   };
 
   return (
@@ -300,7 +303,33 @@ export const BookingsView = () => {
           </motion.div>
         )}
 
+        {/* Step 6: Success Message */}
+        {step === 6 && (
+          <motion.div 
+            key="step6" 
+            initial={{ opacity: 0, scale: 0.9 }} 
+            animate={{ opacity: 1, scale: 1 }}
+            style={{ textAlign: 'center', padding: '40px 20px' }}
+          >
+            <div style={{ 
+              width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(16, 163, 127, 0.1)', 
+              display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: 'var(--accent-color)' 
+            }}>
+              <span className="material-icons" style={{ fontSize: '48px' }}>check_circle</span>
+            </div>
+            <h2 style={{ fontSize: '24px', fontWeight: '800', marginBottom: '12px' }}>Booking Request Sent!</h2>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '32px' }}>
+              Your booking details have been sent via WhatsApp. <br/>
+              <strong>Our team will contact you shortly</strong> to confirm your slot and finalize any special requests.
+            </p>
+            <Button variant="primary" style={{ width: '100%' }} onClick={() => setStep(1)}>
+              Done
+            </Button>
+          </motion.div>
+        )}
+
       </AnimatePresence>
     </div>
+
   );
 };

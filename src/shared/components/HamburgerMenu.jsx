@@ -1,13 +1,23 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp, APP_MODES, APP_PAGES } from '../../core/context/AppContext';
+import { useState, useEffect } from 'react';
 
 export const HamburgerMenu = () => {
-  const { isHamburgerOpen, setIsHamburgerOpen, mode, setMode, activePage, setActivePage, customerName, tableNumber } = useApp();
+  const { isHamburgerOpen, setIsHamburgerOpen, mode, setMode, activePage, setActivePage, customerName, tableNumber, isStartupComplete } = useApp();
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768);
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
 
   const handleNavigate = (page) => {
     setActivePage(page);
     setIsHamburgerOpen(false);
   };
+
 
   const menuSections = [
     {
@@ -21,8 +31,9 @@ export const HamburgerMenu = () => {
     {
       title: 'Explore',
       items: [
-        { label: 'Night Life', icon: 'celebration', page: APP_PAGES.HOME, newMode: APP_MODES.NIGHT_LIFE },
+        { label: 'Night Life', icon: 'celebration', page: APP_PAGES.HOME, newMode: APP_MODES.NIGHT_LIFE, condition: mode !== APP_MODES.NIGHT_LIFE },
         { label: 'Events', icon: 'event', page: APP_PAGES.EVENTS },
+
         { label: 'Services', icon: 'layers', page: APP_PAGES.SERVICES },
         { label: 'Gallery', icon: 'collections', action: () => alert("Gallery coming soon!") },
       ]
@@ -33,8 +44,9 @@ export const HamburgerMenu = () => {
         { label: 'Location / Map', sub: 'Nagarbhavi, Bangalore', icon: 'location_on', action: () => window.open('https://maps.app.goo.gl/uP9pXJd2R6R2qG2e9', '_blank') },
         { label: 'Phone Number', sub: '+91 74111 6694', icon: 'call', action: () => window.open('tel:+917411116694') },
         { label: 'Email', sub: 'kidosokka@gmail.com', icon: 'email', action: () => window.open('mailto:kidosokka@gmail.com') },
-        { label: 'About Sky', icon: 'info', page: APP_PAGES.INFO },
+        { label: 'About Sky', icon: 'info', page: APP_PAGES.ABOUT },
       ]
+
     }
   ];
 
@@ -51,7 +63,7 @@ export const HamburgerMenu = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           style={{
-            position: 'fixed',
+            position: (isDesktop && isStartupComplete) ? 'absolute' : 'fixed',
             inset: 0,
             backgroundColor: '#000',
             zIndex: 1000,
@@ -59,6 +71,7 @@ export const HamburgerMenu = () => {
             paddingBottom: '40px'
           }}
         >
+
           {/* Header Controls */}
           <div style={{ padding: '20px', display: 'flex', alignItems: 'center' }}>
             <button 
@@ -159,15 +172,18 @@ export const HamburgerMenu = () => {
                   <div style={{ color: '#fff', fontSize: '16px', fontWeight: '500' }}>Home Delivery</div>
                 </div>
               </button>
-              <button
-                onClick={() => { setMode(APP_MODES.NIGHT_LIFE); setIsHamburgerOpen(false); }}
-                style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', background: 'transparent', border: 'none', textAlign: 'left', cursor: 'pointer' }}
-              >
-                <span className="material-icons" style={{ color: mode === APP_MODES.NIGHT_LIFE ? 'var(--accent-color)' : 'var(--text-secondary)' }}>nightlife</span>
-                <div style={{ flex: 1 }}>
-                  <div style={{ color: '#fff', fontSize: '16px', fontWeight: '500' }}>Night Life</div>
-                </div>
-              </button>
+              {mode !== APP_MODES.NIGHT_LIFE && (
+                <button
+                  onClick={() => { setMode(APP_MODES.NIGHT_LIFE); setIsHamburgerOpen(false); }}
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', background: 'transparent', border: 'none', textAlign: 'left', cursor: 'pointer' }}
+                >
+                  <span className="material-icons" style={{ color: mode === APP_MODES.NIGHT_LIFE ? 'var(--accent-color)' : 'var(--text-secondary)' }}>nightlife</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ color: '#fff', fontSize: '16px', fontWeight: '500' }}>Night Life</div>
+                  </div>
+                </button>
+              )}
+
             </div>
           </div>
         </motion.div>

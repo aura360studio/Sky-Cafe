@@ -5,7 +5,8 @@ import { Button } from '../../shared/components/Button';
 import { Input } from '../../shared/components/Input';
 import { SectionTitle } from '../../shared/components/SectionTitle';
 import { Modal } from '../../shared/components/Modal';
-import { generateDineInUrl, generateDeliveryUrl } from '../../services/whatsapp';
+import { generateDineInUrl, generateDeliveryUrl, generateRequestBillUrl } from '../../services/whatsapp';
+
 
 export const CartView = () => {
   const { 
@@ -66,10 +67,11 @@ export const CartView = () => {
           </div>
           <Button variant="outline" style={{ width: '100%' }} onClick={() => {
              if(Math.random() >= 0) { // Keep syntax clean
-               window.open(`https://wa.me/917411116694?text=${encodeURIComponent(`🧾 *PING: Bill Requested!*\n*Name:* ${customerName}\n*Table:* ${tableNumber}\n\nPlease bring the final bill to this table.`)}`, "_blank");
+               window.open(generateRequestBillUrl(customerName, tableNumber), "_blank");
                clearSessionOrders();
              }
           }}>
+
             Request Final Bill & Clear Session
           </Button>
         </div>

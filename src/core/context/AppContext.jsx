@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '../supabase/client';
+
 
 const AppContext = createContext();
 
@@ -16,17 +18,69 @@ export const APP_PAGES = {
   INFO: 'INFO',
   SERVICES: 'SERVICES',
   EVENTS: 'EVENTS',
-  ORDER_SUCCESS: 'ORDER_SUCCESS'
+  ORDER_SUCCESS: 'ORDER_SUCCESS',
+  ABOUT: 'ABOUT',
+  ADMIN_LOGIN: 'ADMIN_LOGIN',
+  ADMIN_DASHBOARD: 'ADMIN_DASHBOARD'
 };
+
+
 
 export const AppProvider = ({ children }) => {
   // Startup State
   const [isStartupComplete, setIsStartupComplete] = useState(false);
+  const [showLandingPage, setShowLandingPage] = useState(() => {
+    // Show landing page only on desktop (widht >= 768px)
+    return window.innerWidth >= 768;
+  });
+
+  // Admin State
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminSession, setAdminSession] = useState(null);
 
   // Navigation State
+
+
   const [mode, setMode] = useState(APP_MODES.DINE_IN);
   const [activePage, setActivePage] = useState(APP_PAGES.HOME);
+  const [menuData, setMenuData] = useState({ categories: [], items: [] });
+  const [isDataLoading, setIsDataLoading] = useState(true);
+
+  // Fetch Live Data from Supabase
+  useEffect(() => {
+    const fetchAppData = async () => {
+      try {
+        const { data: categories } = await supabase.from('categories').select('*').order('order');
+        const { data: items } = await supabase.from('menu_items').select('*').order('name');
+        
+        if (categories && items) {
+          // Normalize data structure for frontend components
+          const normalizedItems = items.map(item => ({
+            ...item,
+            title: item.name,
+            isVegetarian: item.is_veg,
+            categoryId: item.category_id,
+            isAvailable: item.is_available
+          }));
+
+          setMenuData({ 
+            categories: categories.map(cat => ({ ...cat, id: cat.id })), 
+            items: normalizedItems 
+          });
+        }
+
+      } catch (error) {
+        console.error('Failed to fetch app data:', error);
+      } finally {
+        setIsDataLoading(false);
+      }
+    };
+
+    fetchAppData();
+  }, [isAdmin]); // Refetch when admin logs in/out to ensure fresh data
+
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
+
 
   // Cart State
   const [cartItems, setCartItems] = useState([]);
@@ -162,7 +216,14 @@ export const AppProvider = ({ children }) => {
 
   const value = {
     isStartupComplete, setIsStartupComplete,
+    showLandingPage, setShowLandingPage,
+    isAdmin, setIsAdmin,
+    adminSession, setAdminSession,
+    menuData, isDataLoading,
     mode, setMode: handleSetMode,
+
+
+
     activePage, setActivePage,
     isHamburgerOpen, setIsHamburgerOpen,
     cartItems, addToCart, removeFromCart, updateCartItemQuantity, clearCart, cartTotal, cartItemCount,

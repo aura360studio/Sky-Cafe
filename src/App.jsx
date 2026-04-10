@@ -10,8 +10,16 @@ import { InfoView } from './features/pages/InfoView';
 import { ServicesView } from './features/pages/ServicesView';
 import { EventsView } from './features/pages/EventsView';
 import { OrderSuccessView } from './features/pages/OrderSuccessView';
+import { AboutView } from './features/pages/AboutView';
+import { LandingPageView } from './features/pages/LandingPageView';
+import { AdminLogin } from './features/admin/AdminLogin';
+import { AdminDashboard } from './features/admin/AdminDashboard';
 import { SplashScreen } from './shared/components/SplashScreen';
+
+
 import { ModeSelectionView } from './features/pages/ModeSelectionView';
+
+
 
 const ViewRenderer = () => {
   const { activePage } = useApp();
@@ -36,7 +44,9 @@ const ViewRenderer = () => {
             case APP_PAGES.SERVICES: return <ServicesView />;
             case APP_PAGES.EVENTS: return <EventsView />;
             case APP_PAGES.ORDER_SUCCESS: return <OrderSuccessView />;
+            case APP_PAGES.ABOUT: return <AboutView />;
             default: return <HomeView />;
+
           }
         })()}
       </motion.div>
@@ -45,23 +55,35 @@ const ViewRenderer = () => {
 };
 
 const MainExperience = () => {
-  const { isStartupComplete } = useApp();
+  const { isStartupComplete, showLandingPage, setShowLandingPage, activePage, setActivePage, isAdmin } = useApp();
   const [showSplash, setShowSplash] = useState(true);
 
-  if (showSplash) {
-    return <SplashScreen key="splash" onFinish={() => setShowSplash(false)} />;
-  }
-
-  if (!isStartupComplete) {
-    return <ModeSelectionView key="selection" />;
-  }
-
   return (
-    <MobileShell>
-      <ViewRenderer />
-    </MobileShell>
+    <AnimatePresence mode="wait">
+      {showSplash ? (
+        <SplashScreen key="splash" onFinish={() => setShowSplash(false)} />
+      ) : isAdmin ? (
+        <AdminDashboard key="admin-dashboard" />
+      ) : activePage === APP_PAGES.ADMIN_LOGIN ? (
+        <AdminLogin key="admin-login" onBack={() => {
+          setActivePage(APP_PAGES.HOME);
+          setShowLandingPage(true);
+        }} />
+      ) : showLandingPage ? (
+        <LandingPageView key="landing" />
+      ) : !isStartupComplete ? (
+        <ModeSelectionView key="selection" />
+      ) : (
+        <MobileShell key="app">
+          <ViewRenderer />
+        </MobileShell>
+      )}
+    </AnimatePresence>
   );
 };
+
+
+
 
 function App() {
   return (

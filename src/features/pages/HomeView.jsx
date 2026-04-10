@@ -8,8 +8,9 @@ import { Card } from '../../shared/components/Card';
 import { Input } from '../../shared/components/Input';
 import { getTodaysSpecial, getPopularItems, getPromoCombos } from '../../services/specialsService';
 import { getHeroContent, getServices } from '../../services/nightLifeService';
-import { generateCallWaiterUrl, generateRequestBillUrl } from '../../services/whatsapp';
+import { generateCallWaiterUrl, generateRequestBillUrl, generatePrivateEventUrl } from '../../services/whatsapp';
 import { RestaurantStatusBanner } from '../../shared/components/RestaurantStatusBanner';
+
 import { Modal } from '../../shared/components/Modal';
 import { InstallAppAction } from '../../shared/components/InstallAppAction';
 
@@ -323,10 +324,11 @@ export const HomeView = () => {
           <Button 
             variant="outline" 
             style={{ marginTop: '16px', width: '100%' }} 
-            onClick={() => window.open('https://wa.me/917411116694?text=Hi, I am interested in booking a private event at Sky Cafe.', '_blank')}
+            onClick={() => window.open(generatePrivateEventUrl(), '_blank')}
           >
             Inquire via WhatsApp
           </Button>
+
         </Card>
       </div>
     );
