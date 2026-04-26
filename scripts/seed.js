@@ -20,10 +20,11 @@ async function seed() {
   console.log('🚀 Starting Supabase Seeding...');
 
   try {
-    // 1. Clear existing data (Optional, be careful)
-    // await supabase.from('menu_items').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-    // await supabase.from('categories').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-    // await supabase.from('events').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    // 1. Clear existing data to prevent duplicates
+    console.log('🧹 Cleaning up old data...');
+    await supabase.from('menu_items').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    await supabase.from('categories').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    await supabase.from('events').delete().neq('id', '00000000-0000-0000-0000-000000000000');
 
     // 2. Load Local Data
     const menuData = JSON.parse(fs.readFileSync('./src/data/menu.json', 'utf8'));
@@ -66,7 +67,10 @@ async function seed() {
       price: item.price,
       description: item.description || '',
       is_veg: item.isVegetarian || false,
-      is_available: item.isAvailable !== undefined ? item.isAvailable : true
+      is_available: item.isAvailable !== undefined ? item.isAvailable : true,
+      is_special: false,
+      is_popular: false,
+      is_combo: false
     })).filter(item => item.category_id); // Ensure we only insert if category exists
 
     const { error: menuError } = await supabase.from('menu_items').insert(menuInsertData);

@@ -1,8 +1,51 @@
-import specialsData from '../data/specials.json';
+import { supabase } from '../core/supabase/client';
 
-// In the future, these will become async:
-// export const getTodaysSpecial = async () => await fetch('/api/specials/today');
+export const getTodaysSpecial = async () => {
+  const { data } = await supabase
+    .from('menu_items')
+    .select('*')
+    .eq('is_special', true)
+    .eq('is_available', true)
+    .limit(1)
+    .maybeSingle();
+  
+  if (data) {
+    return {
+      id: data.id,
+      title: data.name,
+      description: data.description,
+      price: data.price,
+      image: data.image_url || ""
+    };
+  }
+  return null;
+};
 
-export const getTodaysSpecial = () => specialsData.todaysSpecial || null;
-export const getPopularItems = () => specialsData.popularItems || [];
-export const getPromoCombos = () => specialsData.promoCombos || [];
+export const getPopularItems = async () => {
+  const { data } = await supabase
+    .from('menu_items')
+    .select('*')
+    .eq('is_popular', true)
+    .eq('is_available', true);
+  
+  return (data || []).map(item => ({
+    id: item.id,
+    title: item.name,
+    price: item.price
+  }));
+};
+
+export const getPromoCombos = async () => {
+  const { data } = await supabase
+    .from('menu_items')
+    .select('*')
+    .eq('is_combo', true)
+    .eq('is_available', true);
+  
+  return (data || []).map(item => ({
+    id: item.id,
+    title: item.name,
+    description: item.description,
+    price: item.price
+  }));
+};

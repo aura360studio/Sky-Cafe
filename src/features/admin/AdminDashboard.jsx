@@ -224,6 +224,8 @@ const MenuModule = ({ onNotify }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [updatingId, setUpdatingId] = useState(null);
   const [showAddDrawer, setShowAddDrawer] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('all'); // all, special, popular, combo
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [editingPrice, setEditingPrice] = useState({}); // { id: value }
 
 
@@ -233,12 +235,22 @@ const MenuModule = ({ onNotify }) => {
   }, []);
 
   const fetchMenu = async () => {
-    setLoading(true);
-    const { data: catData } = await supabase.from('categories').select('*').order('order');
-    const { data: itemData } = await supabase.from('menu_items').select('*').order('name');
-    setCategories(catData || []);
-    setItems(itemData || []);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const { data: catData, error: catError } = await supabase.from('categories').select('*').order('id');
+      if (catError) throw catError;
+
+      const { data: itemData, error: itemError } = await supabase.from('menu_items').select('*').order('name');
+      if (itemError) throw itemError;
+
+      setCategories(catData || []);
+      setItems(itemData || []);
+    } catch (err) {
+      console.error('Menu load error:', err);
+      onNotify(`Error loading menu: ${err.message || 'Check connection'}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleAvailability = async (itemId, currentStatus) => {
@@ -251,6 +263,24 @@ const MenuModule = ({ onNotify }) => {
     if (!error) {
       setItems(items.map(i => i.id === itemId ? { ...i, is_available: !currentStatus } : i));
       onNotify(`Dish marked as ${!currentStatus ? 'Available' : 'Unavailable'}`);
+    }
+    setUpdatingId(null);
+  };
+
+  const toggleFlag = async (itemId, flag, currentStatus) => {
+    setUpdatingId(itemId);
+    const { error } = await supabase
+      .from('menu_items')
+      .update({ [flag]: !currentStatus })
+      .eq('id', itemId);
+    
+    if (error) {
+      console.error(`Error updating ${flag}:`, error);
+      onNotify(`Error: ${error.message || 'Check if DB columns exist'}`);
+    } else {
+      setItems(items.map(i => i.id === itemId ? { ...i, [flag]: !currentStatus } : i));
+      const flagName = flag.replace('is_', '').toUpperCase();
+      onNotify(`${flagName} updated for item`);
     }
     setUpdatingId(null);
   };
@@ -278,10 +308,60 @@ const MenuModule = ({ onNotify }) => {
     setUpdatingId(null);
   };
 
+  const handleDeleteItem = async (itemId) => {
+    if (!window.confirm('Are you sure you want to delete this item?')) return;
+    setUpdatingId(itemId);
+    const { error } = await supabase.from('menu_items').delete().eq('id', itemId);
+    if (!error) {
+      setItems(items.filter(i => i.id !== itemId));
+      onNotify('Item deleted successfully');
+    } else {
+      onNotify(`Error: ${error.message}`);
+    }
+    setUpdatingId(null);
+  };
 
-  const filteredItems = items.filter(item => 
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const clearDuplicates = async () => {
+    if (!window.confirm('This will delete items with identical names, keeping only one of each. Proceed?')) return;
+    setLoading(true);
+    
+    // Logic to find and delete duplicates
+    const itemMap = new Map();
+    const toDelete = [];
+    
+    items.forEach(item => {
+      if (itemMap.has(item.name)) {
+        toDelete.push(item.id);
+      } else {
+        itemMap.set(item.name, item.id);
+      }
+    });
+
+    if (toDelete.length > 0) {
+      const { error } = await supabase.from('menu_items').delete().in('id', toDelete);
+      if (!error) {
+        setItems(items.filter(i => !toDelete.includes(i.id)));
+        onNotify(`Removed ${toDelete.length} duplicate items`);
+      } else {
+        onNotify(`Error: ${error.message}`);
+      }
+    } else {
+      onNotify('No duplicates found!');
+    }
+    setLoading(false);
+  };
+
+
+  const filteredItems = items.filter(item => {
+    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = 
+      activeFilter === 'all' || 
+      (activeFilter === 'special' && item.is_special) ||
+      (activeFilter === 'popular' && item.is_popular) ||
+      (activeFilter === 'combo' && item.is_combo);
+    const matchesCategory = selectedCategory === 'all' || item.category_id === selectedCategory;
+    return matchesSearch && matchesFilter && matchesCategory;
+  });
 
   if (loading) return <div style={{ padding: '40px', textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>Loading Menu Data...</div>;
 
@@ -307,13 +387,43 @@ const MenuModule = ({ onNotify }) => {
             }}
           />
         </div>
-        <button 
-          onClick={() => setShowAddDrawer(true)}
-          style={{ backgroundColor: 'var(--accent-color)', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: '12px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-        >
-          <span className="material-icons" style={{ fontSize: '20px' }}>add</span>
-          Add New Item
-        </button>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <div style={{ display: 'flex', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '10px', padding: '4px' }}>
+            {['all', 'special', 'popular', 'combo'].map(f => (
+              <button 
+                key={f}
+                onClick={() => setActiveFilter(f)}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  backgroundColor: activeFilter === f ? 'rgba(16, 163, 127, 0.2)' : 'transparent',
+                  color: activeFilter === f ? 'var(--accent-color)' : 'rgba(255,255,255,0.4)',
+                  fontSize: '13px',
+                  fontWeight: '700',
+                  textTransform: 'capitalize',
+                  cursor: 'pointer'
+                }}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+          <button 
+            onClick={() => setShowAddDrawer(true)}
+            style={{ backgroundColor: 'var(--accent-color)', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: '12px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+          >
+            <span className="material-icons" style={{ fontSize: '20px' }}>add</span>
+            Add New Item
+          </button>
+          <button 
+            onClick={clearDuplicates}
+            style={{ backgroundColor: 'rgba(229, 83, 75, 0.1)', color: '#e5534b', border: '1px solid rgba(229, 83, 75, 0.2)', padding: '12px 24px', borderRadius: '12px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+          >
+            <span className="material-icons" style={{ fontSize: '20px' }}>cleaning_services</span>
+            Double Check & Clean
+          </button>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -329,8 +439,39 @@ const MenuModule = ({ onNotify }) => {
 
       {/* Categories Horizontal Quick-Scroll */}
       <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px' }}>
+        <div 
+          onClick={() => setSelectedCategory('all')}
+          style={{ 
+            padding: '8px 16px', 
+            backgroundColor: selectedCategory === 'all' ? 'rgba(16, 163, 127, 0.2)' : 'rgba(255,255,255,0.03)', 
+            borderRadius: '20px', 
+            border: `1px solid ${selectedCategory === 'all' ? 'var(--accent-color)' : 'rgba(255,255,255,0.05)'}`, 
+            fontSize: '13px', 
+            whiteSpace: 'nowrap', 
+            cursor: 'pointer',
+            color: selectedCategory === 'all' ? 'var(--accent-color)' : '#fff'
+          }}
+        >
+          All Items
+        </div>
         {categories.map(cat => (
-          <div key={cat.id} style={{ padding: '8px 16px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '13px', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+          <div 
+            key={cat.id} 
+            onClick={() => setSelectedCategory(prev => prev === cat.id ? 'all' : cat.id)}
+            style={{ 
+              padding: '8px 16px', 
+              backgroundColor: selectedCategory === cat.id ? 'rgba(16, 163, 127, 0.2)' : 'rgba(255,255,255,0.03)', 
+              borderRadius: '20px', 
+              border: `1px solid ${selectedCategory === cat.id ? 'var(--accent-color)' : 'rgba(255,255,255,0.05)'}`, 
+              fontSize: '13px', 
+              whiteSpace: 'nowrap', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '8px', 
+              cursor: 'pointer',
+              color: selectedCategory === cat.id ? 'var(--accent-color)' : '#fff'
+            }}
+          >
             <span>{cat.icon}</span>
             <span>{cat.name}</span>
           </div>
@@ -351,7 +492,9 @@ const MenuModule = ({ onNotify }) => {
               <th style={{ padding: '20px 24px', fontSize: '12px', fontVariant: 'all-small-caps', letterSpacing: '1px', color: 'rgba(255,255,255,0.4)' }}>Dish Name</th>
               <th style={{ padding: '20px 24px', fontSize: '12px', fontVariant: 'all-small-caps', letterSpacing: '1px', color: 'rgba(255,255,255,0.4)' }}>Category</th>
               <th style={{ padding: '20px 24px', fontSize: '12px', fontVariant: 'all-small-caps', letterSpacing: '1px', color: 'rgba(255,255,255,0.4)' }}>Price (₹)</th>
-              <th style={{ padding: '20px 24px', fontSize: '12px', fontVariant: 'all-small-caps', letterSpacing: '1px', color: 'rgba(255,255,255,0.4)' }}>Stock Status</th>
+              <th style={{ padding: '20px 24px', fontSize: '12px', fontVariant: 'all-small-caps', letterSpacing: '1px', color: 'rgba(255,255,255,0.4)' }}>Promo</th>
+              <th style={{ padding: '20px 24px', fontSize: '12px', fontVariant: 'all-small-caps', letterSpacing: '1px', color: 'rgba(255,255,255,0.4)' }}>Deliv?</th>
+              <th style={{ padding: '20px 24px', fontSize: '12px', fontVariant: 'all-small-caps', letterSpacing: '1px', color: 'rgba(255,255,255,0.4)' }}>Status</th>
               <th style={{ padding: '20px 24px', fontSize: '12px', fontVariant: 'all-small-caps', letterSpacing: '1px', color: 'rgba(255,255,255,0.4)', textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
@@ -408,6 +551,49 @@ const MenuModule = ({ onNotify }) => {
                   </td>
 
                   <td style={{ padding: '20px 24px' }}>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button 
+                        onClick={() => toggleFlag(item.id, 'is_special', item.is_special)}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: item.is_special ? 'var(--accent-color)' : 'rgba(255,255,255,0.1)' }}
+                        title="Special"
+                      >
+                        <span className="material-icons" style={{ fontSize: '20px' }}>{item.is_special ? 'star' : 'star_outline'}</span>
+                      </button>
+                      <button 
+                        onClick={() => toggleFlag(item.id, 'is_popular', item.is_popular)}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: item.is_popular ? '#ffc107' : 'rgba(255,255,255,0.1)' }}
+                        title="Popular"
+                      >
+                        <span className="material-icons" style={{ fontSize: '20px' }}>trending_up</span>
+                      </button>
+                    </div>
+                  </td>
+                  <td style={{ padding: '20px 24px' }}>
+                    <button 
+                      onClick={() => toggleFlag(item.id, 'is_deliverable', item.is_deliverable ?? true)}
+                      style={{ 
+                        background: 'none', 
+                        border: 'none', 
+                        cursor: 'pointer', 
+                        padding: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'all 0.2s ease',
+                        color: (item.is_deliverable ?? true) ? '#2196f3' : 'rgba(255,255,255,0.1)' 
+                      }}
+                      title={(item.is_deliverable ?? true) ? 'Deliverable' : 'Dine-In Only'}
+                    >
+                      <span className="material-icons" style={{ fontSize: '22px' }}>
+                        {(item.is_deliverable ?? true) ? 'local_shipping' : 'local_shipping'}
+                      </span>
+                      {!(item.is_deliverable ?? true) && (
+                        <div style={{ position: 'absolute', width: '20px', height: '2px', backgroundColor: '#e5534b', transform: 'rotate(-45deg)' }}></div>
+                      )}
+                    </button>
+                  </td>
+
+                  <td style={{ padding: '20px 24px' }}>
                     <div 
                       onClick={() => toggleAvailability(item.id, item.is_available)}
                       style={{
@@ -434,8 +620,13 @@ const MenuModule = ({ onNotify }) => {
                     </div>
                   </td>
                   <td style={{ padding: '20px 24px', textAlign: 'right' }}>
-                    <button style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', padding: '4px' }}>
-                      <span className="material-icons" style={{ fontSize: '18px' }}>more_vert</span>
+                    <button 
+                      onClick={() => handleDeleteItem(item.id)}
+                      style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.2)', cursor: 'pointer', padding: '4px', transition: 'color 0.2s' }}
+                      onMouseEnter={(e) => e.target.style.color = '#e5534b'}
+                      onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.2)'}
+                    >
+                      <span className="material-icons" style={{ fontSize: '18px' }}>delete</span>
                     </button>
                   </td>
                 </tr>
@@ -448,7 +639,103 @@ const MenuModule = ({ onNotify }) => {
   );
 };
 
-const EventsModule = () => <p>Events Management coming soon.</p>;
+const EventsModule = () => {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchHighlights();
+  }, []);
+
+  const fetchHighlights = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('menu_items')
+        .select('*, categories(name)')
+        .or('is_special.eq.true,is_popular.eq.true,is_combo.eq.true');
+      
+      if (error) throw error;
+      setItems(data || []);
+    } catch (err) {
+      console.error('Highlights load error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removeHighlight = async (id, flag) => {
+    const { error } = await supabase.from('menu_items').update({ [flag]: false }).eq('id', id);
+    if (!error) fetchHighlights();
+  };
+
+  if (loading) return <div style={{ color: 'rgba(255,255,255,0.4)' }}>Loading summary...</div>;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+        
+        {/* Today's Special Section */}
+        <HighlightCard 
+          title="Today's Special" 
+          icon="star" 
+          items={items.filter(i => i.is_special)} 
+          onRemove={(id) => removeHighlight(id, 'is_special')}
+          color="#10a37f"
+        />
+
+        {/* Popular Items Section */}
+        <HighlightCard 
+          title="Popular Items" 
+          icon="trending_up" 
+          items={items.filter(i => i.is_popular)} 
+          onRemove={(id) => removeHighlight(id, 'is_popular')}
+          color="#ffc107"
+        />
+
+        {/* Combos Section */}
+        <HighlightCard 
+          title="Promo Combos" 
+          icon="layers" 
+          items={items.filter(i => i.is_combo)} 
+          onRemove={(id) => removeHighlight(id, 'is_combo')}
+          color="#9c27b0"
+        />
+
+      </div>
+    </div>
+  );
+};
+
+const HighlightCard = ({ title, icon, items, onRemove, color }) => (
+  <div style={{ backgroundColor: 'rgba(255,255,255,0.02)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)', padding: '24px' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+      <span className="material-icons" style={{ color: color }}>{icon}</span>
+      <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '700' }}>{title}</h3>
+      <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)', marginLeft: 'auto' }}>{items.length} Active</span>
+    </div>
+
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      {items.length === 0 ? (
+        <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: '13px', margin: 0, padding: '12px', textAlign: 'center', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '12px' }}>
+          No {title} set
+        </p>
+      ) : (
+        items.map(item => (
+          <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '12px' }}>
+            <div>
+              <p style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>{item.name}</p>
+              <p style={{ margin: 0, fontSize: '11px', color: 'rgba(255,255,255,0.3)' }}>₹{item.price} • {item.categories?.name}</p>
+            </div>
+            <button onClick={() => onRemove(item.id)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.2)', cursor: 'pointer', padding: '4px' }}>
+              <span className="material-icons" style={{ fontSize: '16px' }}>close</span>
+            </button>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+);
 const AnalyticsModule = () => <p>Analytics insights coming soon.</p>;
 const SettingsModule = () => <p>Platform settings.</p>;
 const BookingsModule = () => (
@@ -466,7 +753,11 @@ const AddItemDrawer = ({ categories, onClose, onAdded }) => {
     price: '',
     category_id: categories[0]?.id || '',
     is_veg: true,
-    description: ''
+    description: '',
+    is_special: false,
+    is_popular: false,
+    is_combo: false,
+    is_deliverable: true
   });
   const [saving, setSaving] = useState(false);
 
@@ -558,6 +849,27 @@ const AddItemDrawer = ({ categories, onClose, onAdded }) => {
               <option key={cat.id} value={cat.id}>{cat.name} ({cat.mode})</option>
             ))}
           </select>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <label style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', fontWeight: '600' }}>SPECIAL ATTRIBUTES</label>
+          <div style={{ display: 'flex', gap: '12px', marginBottom: '4px' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', cursor: 'pointer' }}>
+              <input type="checkbox" checked={formData.is_special} onChange={(e) => setFormData({ ...formData, is_special: e.target.checked })} />
+              Special
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', cursor: 'pointer' }}>
+              <input type="checkbox" checked={formData.is_popular} onChange={(e) => setFormData({ ...formData, is_popular: e.target.checked })} />
+              Popular
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', cursor: 'pointer' }}>
+              <input type="checkbox" checked={formData.is_combo} onChange={(e) => setFormData({ ...formData, is_combo: e.target.checked })} />
+              Combo
+            </label>
+          </div>
+          <p style={{ fontSize: '11px', color: 'rgba(16, 163, 127, 0.6)', margin: 0, lineHeight: '1.4' }}>
+            💡 <strong>Combos:</strong> Add as a new item with special price & bundled description (e.g. Burger + Fries).
+          </p>
         </div>
 
         <button 

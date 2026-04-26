@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useApp, APP_MODES, APP_PAGES } from '../../core/context/AppContext';
 import { SpecialBanner } from '../../shared/components/SpecialBanner';
@@ -15,13 +15,27 @@ import { Modal } from '../../shared/components/Modal';
 import { InstallAppAction } from '../../shared/components/InstallAppAction';
 
 export const HomeView = () => {
-  const todaysSpecial = getTodaysSpecial();
-  const popularItems = getPopularItems();
-  const promoCombos = getPromoCombos();
+  const [todaysSpecial, setTodaysSpecial] = useState(null);
+  const [popularItems, setPopularItems] = useState([]);
+  const [promoCombos, setPromoCombos] = useState([]);
 
   const { mode, setActivePage, setMode, customerName, setCustomerName, tableNumber, setTableNumber, addToCart } = useApp();
   const [isQuickActionModalOpen, setIsQuickActionModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState(null); // 'waiter' or 'bill'
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const [special, popular, combos] = await Promise.all([
+        getTodaysSpecial(),
+        getPopularItems(),
+        getPromoCombos()
+      ]);
+      setTodaysSpecial(special);
+      setPopularItems(popular);
+      setPromoCombos(combos);
+    };
+    fetchData();
+  }, []);
 
   const executeQuickAction = (actionType, name, table) => {
     if (actionType === 'waiter') {

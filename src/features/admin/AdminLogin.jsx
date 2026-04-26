@@ -28,7 +28,12 @@ export const AdminLogin = ({ onBack }) => {
         setIsAdmin(true);
       }
     } catch (err) {
-      setError(err.message || 'Failed to login. Please check your credentials.');
+      console.error('Login error:', err);
+      let msg = err.message || 'Failed to login. Please check your credentials.';
+      if (msg.includes('fetch')) {
+        msg = 'Connection Error: Unable to reach Supabase. Please check if the project is active (not paused) in your dashboard.';
+      }
+      setError(msg);
     } finally {
       setLoading(false);
     }

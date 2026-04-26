@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useApp, APP_MODES } from '../../core/context/AppContext';
 import { CategoryCard } from '../../shared/components/CategoryCard';
 import { MenuItemCard } from '../../shared/components/MenuItemCard';
@@ -7,17 +7,46 @@ import { SectionTitle } from '../../shared/components/SectionTitle';
 
 export const MenuView = () => {
   const { mode, addToCart, menuData, isDataLoading } = useApp();
+  const scrollRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
 
   const isDelivery = mode === APP_MODES.DELIVERY;
   
-  // Filter categories based on mode (DINE_IN/DELIVERY)
-  const activeCategories = menuData.categories.filter(c => c.mode === (isDelivery ? 'DELIVERY' : 'DINE_IN'));
-  const activeItems = menuData.items.filter(i => 
-    menuData.categories.find(c => c.id === i.categoryId)?.mode === (isDelivery ? 'DELIVERY' : 'DINE_IN')
-  );
+  // Memoize categories to prevent the 'snap-back' bug when clicking
+  const activeCategories = useMemo(() => {
+    return menuData.categories.filter(cat => {
+      // A category is active in this mode if it has items that are valid for this mode
+      return menuData.items.some(item => 
+        item.categoryId === cat.id && 
+        (isDelivery ? item.isDeliverable : true)
+      );
+    });
+  }, [menuData, isDelivery]);
+
+  const activeItems = menuData.items;
 
   const [activeCat, setActiveCat] = useState(null);
   const [vegOnly, setVegOnly] = useState(false);
+
+  // Drag to scroll logic
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+
+  const handleMouseLeave = () => setIsDragging(false);
+  const handleMouseUp = () => setIsDragging(false);
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // Scroll speed
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
 
   // Initialize active category once data is loaded
   useEffect(() => {
@@ -27,10 +56,12 @@ export const MenuView = () => {
   }, [activeCategories, activeCat]);
 
 
-  // Reset active category when changing modes
+  // Reset active category ONLY when changing modes
   useEffect(() => {
-    setActiveCat(activeCategories[0]?.id);
-  }, [mode, activeCategories]);
+    if (activeCategories.length > 0) {
+      setActiveCat(activeCategories[0].id);
+    }
+  }, [mode]); // Removed activeCategories from dependency to stop resetting on every render
 
   if (isDataLoading) {
     return (
@@ -49,9 +80,12 @@ export const MenuView = () => {
     );
   }
 
-  const filteredItems = activeItems.filter(item => 
-    item.categoryId === activeCat && (!vegOnly || item.isVegetarian)
-  );
+  const filteredItems = activeItems.filter(item => {
+    const matchesCategory = item.categoryId === activeCat;
+    const matchesVeg = !vegOnly || item.isVegetarian;
+    const matchesDelivery = !isDelivery || item.isDeliverable;
+    return matchesCategory && matchesVeg && matchesDelivery;
+  });
 
 
   return (
@@ -64,7 +98,22 @@ export const MenuView = () => {
         </label>
       </div>
       
-      <div className="tabs-container" style={{ margin: '0 -16px 20px', padding: '0 16px' }}>
+      <div 
+        className="tabs-container" 
+        ref={scrollRef}
+        onMouseDown={handleMouseDown}
+        onMouseLeave={handleMouseLeave}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+        style={{ 
+          margin: '0 -16px 20px', 
+          padding: '0 16px',
+          cursor: isDragging ? 'grabbing' : 'grab',
+          userSelect: 'none',
+          WebkitOverflowScrolling: 'touch',
+          scrollbarWidth: 'none'
+        }}
+      >
         {activeCategories.map(cat => (
           <CategoryCard 
             key={cat.id} 

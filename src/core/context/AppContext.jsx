@@ -50,27 +50,72 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     const fetchAppData = async () => {
       try {
-        const { data: categories } = await supabase.from('categories').select('*').order('order');
-        const { data: items } = await supabase.from('menu_items').select('*').order('name');
+        console.log('📡 Fetching menu data from Supabase...');
         
-        if (categories && items) {
+        // Try fetching categories first (safer ordering by id if 'order' column is missing)
+        const { data: categories, error: catError } = await supabase
+          .from('categories')
+          .select('*')
+          .order('id'); // Using ID instead of 'order' which might be missing
+        
+        if (catError) throw catError;
+
+        const { data: items, error: itemError } = await supabase
+          .from('menu_items')
+          .select('*')
+          .order('name');
+        
+        if (itemError) throw itemError;
+
+        if (categories && items && categories.length > 0) {
+          console.log('📦 Categories from Supabase:', categories);
+          console.log(`✅ Supabase data loaded: ${items.length} items.`);
           // Normalize data structure for frontend components
           const normalizedItems = items.map(item => ({
             ...item,
             title: item.name,
             isVegetarian: item.is_veg,
             categoryId: item.category_id,
-            isAvailable: item.is_available
+            isAvailable: item.is_available,
+            isDeliverable: item.is_deliverable !== undefined ? item.is_deliverable : true
           }));
 
           setMenuData({ 
             categories: categories.map(cat => ({ ...cat, id: cat.id })), 
             items: normalizedItems 
           });
+        } else {
+          throw new Error('Supabase database is empty or unreachable.');
         }
 
       } catch (error) {
-        console.error('Failed to fetch app data:', error);
+        console.error('⚠️ Supabase connection failed. Falling back to local data:', error.message);
+        
+        // --- FALLBACK LOGIC ---
+        // Dynamically import local data (since it's a large JSON)
+        try {
+          const localMenu = await import('../../data/menu.json');
+          const allCategories = [
+            ...localMenu.default.dineInCategories.map(c => ({ ...c, mode: 'DINE_IN' })),
+            ...localMenu.default.deliveryCategories.map(c => ({ ...c, mode: 'DELIVERY' }))
+          ];
+          
+          // Deduplicate categories by ID
+          const uniqueCats = Array.from(new Map(allCategories.map(c => [c.id, c])).values());
+          
+          const allItems = [
+            ...localMenu.default.dineInItems,
+            ...localMenu.default.deliveryItems
+          ];
+
+          setMenuData({
+            categories: uniqueCats,
+            items: allItems
+          });
+          console.log('🛡️ Local fallback data active.');
+        } catch (localError) {
+          console.error('❌ Critical: Local menu data also failed to load!', localError);
+        }
       } finally {
         setIsDataLoading(false);
       }
